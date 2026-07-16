@@ -9,7 +9,7 @@
     />
     <meta name="theme-color" content="#130f16" />
     <title>Lady Brill - бесплатное обучение инкрустации стразами</title>
-    <link rel="preload" as="image" href="assets/hero-galina.jpg" />
+    <link rel="preload" as="image" href="assets/generated/campaign-hero.jpg" />
     <link rel="stylesheet" href="styles.css" />
     <script>
       document.documentElement.classList.remove("no-js");
@@ -21,15 +21,6 @@
     <a class="skip-link" href="#main">Перейти к содержанию</a>
 
     <header class="site-header" data-header>
-      <a class="brand" href="#top" aria-label="Lady Brill, на главную">
-        <img
-          src="assets/lady-brill-logo.png"
-          width="1190"
-          height="271"
-          alt="Lady Brill"
-        />
-      </a>
-
       <button
         class="menu-toggle"
         type="button"
@@ -62,9 +53,6 @@
 
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
-        <div class="hero-facet hero-facet--one" aria-hidden="true"></div>
-        <div class="hero-facet hero-facet--two" aria-hidden="true"></div>
-
         <div class="hero-copy">
           <p class="hero-kicker">Бесплатное онлайн-обучение + сертификат</p>
           <h1 id="hero-title">
@@ -91,23 +79,12 @@
           <div class="hero-photo-frame">
             <img
               class="hero-photo"
-              src="assets/hero-galina.jpg"
-              width="864"
-              height="1280"
+              src="assets/generated/campaign-hero.jpg"
+              width="1536"
+              height="1024"
               alt=""
             />
           </div>
-          <div class="hero-crystal-orbit">
-            <img
-              src="assets/crystal-lollipop.jpg"
-              width="809"
-              height="765"
-              alt=""
-            />
-          </div>
-          <i class="sparkle sparkle--a"></i>
-          <i class="sparkle sparkle--b"></i>
-          <i class="sparkle sparkle--c"></i>
         </div>
       </section>
 
@@ -127,7 +104,6 @@
 
         <div class="results-grid">
           <article class="result result--lead reveal">
-            <div class="result-gem" aria-hidden="true"></div>
             <h3>Узнаете основы профессии кристаллайзера</h3>
             <p>
               Поймете, как работать и хорошо преуспевать на хобби в легкости и кайфе.
@@ -136,23 +112,21 @@
 
           <figure class="result result--photo result--lollipop reveal">
             <img
-              src="assets/crystal-lollipop.jpg"
-              width="809"
-              height="765"
+              src="assets/generated/campaign-objects.jpg"
+              width="1122"
+              height="1402"
               loading="lazy"
-              alt="Леденец, украшенный розовыми стразами"
+              alt="Туфля, аксессуар и леденец, украшенные стразами"
             />
             <figcaption>Сделаете первое изделие с кристаллами</figcaption>
           </figure>
 
           <article class="result result--chrome reveal">
-            <p class="result-mark">Lady Brill</p>
             <h3>Заработаете Brill-рубли</h3>
             <p>Их можно потратить в школе Lady BRILL.</p>
           </article>
 
           <article class="result result--certificate reveal">
-            <div class="certificate-seal" aria-hidden="true"></div>
             <h3>Получите сертификат о прохождении обучения</h3>
           </article>
 
@@ -163,11 +137,11 @@
 
           <figure class="result result--photo result--stockings reveal">
             <img
-              src="assets/crystal-stockings.jpg"
+              src="assets/generated/crystal-texture.jpg"
               width="1200"
-              height="1800"
+              height="1200"
               loading="lazy"
-              alt="Надпись Lady Brill из страз на черных чулках"
+              alt="Крупный план настоящих страз на черном сатине"
             />
           </figure>
         </div>
@@ -187,53 +161,67 @@
       <section class="possibilities section" aria-labelledby="possibilities-title">
         <div class="possibilities-heading reveal">
           <h2 id="possibilities-title">Инкрустировать можно любое изделие</h2>
-          <div class="carousel-controls" aria-label="Управление галереей">
-            <button type="button" data-carousel-target="work-gallery" data-direction="-1">
-              Назад
-            </button>
-            <button type="button" data-carousel-target="work-gallery" data-direction="1">
-              Далее
-            </button>
-          </div>
         </div>
 
-        <div class="work-gallery" id="work-gallery" data-carousel>
-          <figure class="work-shot work-shot--wide">
-            <img
-              src="assets/crystal-shoes.jpg"
-              width="1500"
-              height="2250"
-              loading="lazy"
-              alt="Туфли, полностью украшенные стразами"
-            />
-          </figure>
-          <figure class="work-shot work-shot--portrait">
-            <img
-              src="assets/galina-side.jpg"
-              width="864"
-              height="1280"
-              loading="lazy"
-              alt="Галина Гулевская с кристаллами на коже и одежде"
-            />
-          </figure>
-          <figure class="work-shot work-shot--close">
-            <img
-              src="assets/crystal-stockings.jpg"
-              width="1200"
-              height="1800"
-              loading="lazy"
-              alt="Декор чулок стразами"
-            />
-          </figure>
-          <figure class="work-shot work-shot--square">
-            <img
-              src="assets/crystal-lollipop.jpg"
-              width="809"
-              height="765"
-              loading="lazy"
-              alt="Розовый леденец в стразах"
-            />
-          </figure>
+        <div class="carousel-shell reveal">
+          <button
+            class="carousel-arrow carousel-arrow--prev"
+            type="button"
+            data-carousel-target="work-gallery"
+            data-direction="-1"
+            aria-label="Предыдущий кадр"
+          >
+            <span aria-hidden="true">&#8592;</span>
+          </button>
+
+          <div class="work-gallery" id="work-gallery" data-carousel>
+            <figure class="work-shot work-shot--wide">
+              <img
+                src="assets/generated/campaign-gallery.jpg"
+                width="1672"
+                height="941"
+                loading="lazy"
+                alt="Коллекция модных аксессуаров, украшенных стразами"
+              />
+            </figure>
+            <figure class="work-shot work-shot--portrait">
+              <img
+                src="assets/generated/campaign-objects.jpg"
+                width="1122"
+                height="1402"
+                loading="lazy"
+                alt="Предметная композиция с туфлей и аксессуарами в стразах"
+              />
+            </figure>
+            <figure class="work-shot work-shot--close">
+              <img
+                src="assets/generated/crystal-texture.jpg"
+                width="1200"
+                height="1200"
+                loading="lazy"
+                alt="Стразы разных размеров на черном сатине"
+              />
+            </figure>
+            <figure class="work-shot work-shot--square">
+              <img
+                src="assets/generated/campaign-hero.jpg"
+                width="1536"
+                height="1024"
+                loading="lazy"
+                alt="Fashion-образ с кристальными очками и вышивкой"
+              />
+            </figure>
+          </div>
+
+          <button
+            class="carousel-arrow carousel-arrow--next"
+            type="button"
+            data-carousel-target="work-gallery"
+            data-direction="1"
+            aria-label="Следующий кадр"
+          >
+            <span aria-hidden="true">&#8594;</span>
+          </button>
         </div>
       </section>
 
@@ -246,7 +234,6 @@
             loading="lazy"
             alt="Галина Гулевская в очках, украшенных стразами"
           />
-          <i class="sparkle sparkle--author"></i>
         </div>
 
         <div class="author-copy reveal">
@@ -266,14 +253,6 @@
               <strong>&gt; 50 000</strong>
               <span>кристаллайзеров обучила</span>
             </article>
-          </div>
-
-          <div class="author-facts">
-            <p>
-              Инкрустировала собственный автомобиль, на который заработала, будучи
-              кристаллайзером.
-            </p>
-            <p>Автор программы «Надписи и трафареты» для страз.</p>
           </div>
         </div>
       </section>
@@ -320,11 +299,11 @@
 
           <article class="audience-card audience-card--image reveal">
             <img
-              src="assets/crystal-shoes.jpg"
-              width="1500"
-              height="2250"
+              src="assets/generated/crystal-texture.jpg"
+              width="1200"
+              height="1200"
               loading="lazy"
-              alt="Обувь со стразами"
+              alt="Россыпь страз на черном сатине"
             />
             <div>
               <h3>Дизайнеры одежды и интерьера</h3>
@@ -361,44 +340,72 @@
             Отзывы блестящих учениц
             <span class="script-word">Галины Гулевской</span>
           </h2>
-          <div class="carousel-controls" aria-label="Управление отзывами">
-            <button type="button" data-carousel-target="reviews-track" data-direction="-1">
-              Назад
-            </button>
-            <button type="button" data-carousel-target="reviews-track" data-direction="1">
-              Далее
-            </button>
-          </div>
         </div>
 
-        <div class="reviews-track" id="reviews-track" data-carousel>
-          <figure class="review-card">
-            <img
-              src="assets/review-01.jpg"
-              width="1680"
-              height="1314"
-              loading="lazy"
-              alt="Отзыв Екатерины об обучении у Галины Гулевской"
-            />
-          </figure>
-          <figure class="review-card">
-            <img
-              src="assets/review-02.jpg"
-              width="1680"
-              height="1314"
-              loading="lazy"
-              alt="Отзыв Полины и примеры работ со стразами"
-            />
-          </figure>
-          <figure class="review-card">
-            <img
-              src="assets/review-03.jpg"
-              width="1680"
-              height="1314"
-              loading="lazy"
-              alt="Отзыв Марианы и примеры работ со стразами"
-            />
-          </figure>
+        <div class="carousel-shell carousel-shell--reviews reveal">
+          <button
+            class="carousel-arrow carousel-arrow--prev"
+            type="button"
+            data-carousel-target="reviews-track"
+            data-direction="-1"
+            aria-label="Предыдущий отзыв"
+          >
+            <span aria-hidden="true">&#8592;</span>
+          </button>
+
+          <div class="reviews-track" id="reviews-track" data-carousel>
+            <article class="review-card review-card--ekaterina">
+              <div class="review-copy">
+                <blockquote>
+                  Через три недели после начала обучения я начала принимать заказы и
+                  ещё до окончания курса окупила его стоимость.
+                </blockquote>
+                <p>Екатерина <span>@_EKATERINA81__</span></p>
+              </div>
+              <div class="review-outcome">
+                <strong>3 недели</strong>
+                <span>до первых заказов</span>
+              </div>
+            </article>
+
+            <article class="review-card review-card--polina">
+              <div class="review-copy">
+                <blockquote>
+                  После первых уроков получила первые заказы и заработала на курсе
+                  около 50 тысяч рублей.
+                </blockquote>
+                <p>Полина <span>@POLLY_SHINING</span></p>
+              </div>
+              <div class="review-outcome">
+                <strong>50 000 ₽</strong>
+                <span>во время обучения</span>
+              </div>
+            </article>
+
+            <article class="review-card review-card--mariana">
+              <div class="review-copy">
+                <blockquote>
+                  Во время курса заработала более 2 тысяч евро и инкрустировала более
+                  100 подушек.
+                </blockquote>
+                <p>Мариана <span>@MARY.BRILL.SS</span></p>
+              </div>
+              <div class="review-outcome">
+                <strong>&gt; 2 000 €</strong>
+                <span>во время обучения</span>
+              </div>
+            </article>
+          </div>
+
+          <button
+            class="carousel-arrow carousel-arrow--next"
+            type="button"
+            data-carousel-target="reviews-track"
+            data-direction="1"
+            aria-label="Следующий отзыв"
+          >
+            <span aria-hidden="true">&#8594;</span>
+          </button>
         </div>
       </section>
 
@@ -418,9 +425,9 @@
 
         <div class="final-photo reveal" aria-hidden="true">
           <img
-            src="assets/galina-side.jpg"
-            width="864"
-            height="1280"
+            src="assets/generated/campaign-final.jpg"
+            width="1122"
+            height="1402"
             loading="lazy"
             alt=""
           />
@@ -429,16 +436,6 @@
     </main>
 
     <footer class="site-footer">
-      <div class="footer-brand">
-        <img
-          src="assets/lady-brill-logo.png"
-          width="1190"
-          height="271"
-          loading="lazy"
-          alt="Lady Brill"
-        />
-      </div>
-
       <div class="footer-legal">
         <p>ИП Гулевская Г.В.</p>
         <p>ИНН 710710777904</p>

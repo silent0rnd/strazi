@@ -12,6 +12,7 @@ const mimeTypes = {
   ".jpg": "image/jpeg",
   ".js": "text/javascript; charset=utf-8",
   ".png": "image/png",
+  ".ttf": "font/ttf",
 };
 
 createServer(async (request, response) => {
