@@ -10,6 +10,13 @@
     <meta name="theme-color" content="#130f16" />
     <title>Lady Brill - бесплатное обучение инкрустации стразами</title>
     <link rel="preload" as="image" href="assets/generated/campaign-hero.jpg" />
+    <link
+      rel="preload"
+      as="font"
+      href="assets/fonts/MarckScript-Regular.ttf"
+      type="font/ttf"
+      crossorigin
+    />
     <link rel="stylesheet" href="styles.css" />
     <script>
       document.documentElement.classList.remove("no-js");
@@ -42,7 +49,7 @@
       </nav>
 
       <a
-        class="button button--small header-cta"
+        class="button button--small button--nav header-cta"
         href="https://r.bothelp.io/tg?domain=ladybrillbot&amp;start=c1773757912502-ds"
         target="_blank"
         rel="noopener noreferrer"
@@ -60,7 +67,8 @@
             <span>инкрустации стразами</span>
           </h1>
           <p class="hero-lead">
-            Узнай, как зарабатывать на любимом хобби от 50 000 ₽ в месяц.
+            <span>Узнай, как зарабатывать на любимом хобби</span>
+            <span>от <strong>50 000 ₽</strong> в месяц.</span>
           </p>
           <div class="hero-actions">
             <a
@@ -77,21 +85,22 @@
 
         <div class="hero-visual" aria-hidden="true">
           <div class="hero-photo-frame">
-            <img
-              class="hero-photo"
-              src="assets/generated/campaign-hero.jpg"
-              width="1536"
-              height="1024"
-              alt=""
-            />
+            <div class="hero-photo"></div>
           </div>
         </div>
       </section>
 
       <section class="trust-strip" id="education" aria-label="Сведения об обучении">
-        <p>Образовательная лицензия № Л035-01247-71/0070623</p>
-        <p>Бесплатное обучение</p>
-        <p>Сертификат о прохождении</p>
+        <article class="trust-item">
+          <strong>Образовательная лицензия</strong>
+          <span>№ Л035-01247-71/0070623</span>
+        </article>
+        <article class="trust-item">
+          <strong>Бесплатное обучение</strong>
+        </article>
+        <article class="trust-item">
+          <strong>Сертификат о прохождении</strong>
+        </article>
       </section>
 
       <section class="results section" id="results" aria-labelledby="results-title">
@@ -102,48 +111,31 @@
           </h2>
         </div>
 
-        <div class="results-grid">
-          <article class="result result--lead reveal">
+        <div class="results-grid results-grid--uniform">
+          <article class="result result-card reveal">
             <h3>Узнаете основы профессии кристаллайзера</h3>
             <p>
               Поймете, как работать и хорошо преуспевать на хобби в легкости и кайфе.
             </p>
           </article>
 
-          <figure class="result result--photo result--lollipop reveal">
-            <img
-              src="assets/generated/campaign-objects.jpg"
-              width="1122"
-              height="1402"
-              loading="lazy"
-              alt="Туфля, аксессуар и леденец, украшенные стразами"
-            />
-            <figcaption>Сделаете первое изделие с кристаллами</figcaption>
-          </figure>
+          <article class="result result-card reveal">
+            <h3>Сделаете первое изделие с кристаллами</h3>
+          </article>
 
-          <article class="result result--chrome reveal">
+          <article class="result result-card reveal">
             <h3>Заработаете Brill-рубли</h3>
             <p>Их можно потратить в школе Lady BRILL.</p>
           </article>
 
-          <article class="result result--certificate reveal">
+          <article class="result result-card reveal">
             <h3>Получите сертификат о прохождении обучения</h3>
           </article>
 
-          <article class="result result--gift reveal">
+          <article class="result result-card reveal">
             <h3>Подарки</h3>
             <p>Трафареты для инкрустации и мастер-классы.</p>
           </article>
-
-          <figure class="result result--photo result--stockings reveal">
-            <img
-              src="assets/generated/crystal-texture.jpg"
-              width="1200"
-              height="1200"
-              loading="lazy"
-              alt="Крупный план настоящих страз на черном сатине"
-            />
-          </figure>
         </div>
 
         <div class="section-action reveal">
@@ -174,7 +166,14 @@
             <span aria-hidden="true">&#8592;</span>
           </button>
 
-          <div class="work-gallery" id="work-gallery" data-carousel>
+          <div
+            class="work-gallery"
+            id="work-gallery"
+            data-carousel
+            role="region"
+            aria-roledescription="карусель"
+            aria-label="Примеры работ"
+          >
             <figure class="work-shot work-shot--wide">
               <img
                 src="assets/generated/campaign-gallery.jpg"
@@ -193,15 +192,6 @@
                 alt="Предметная композиция с туфлей и аксессуарами в стразах"
               />
             </figure>
-            <figure class="work-shot work-shot--close">
-              <img
-                src="assets/generated/crystal-texture.jpg"
-                width="1200"
-                height="1200"
-                loading="lazy"
-                alt="Стразы разных размеров на черном сатине"
-              />
-            </figure>
             <figure class="work-shot work-shot--square">
               <img
                 src="assets/generated/campaign-hero.jpg"
@@ -209,6 +199,15 @@
                 height="1024"
                 loading="lazy"
                 alt="Fashion-образ с кристальными очками и вышивкой"
+              />
+            </figure>
+            <figure class="work-shot work-shot--portrait">
+              <img
+                src="assets/generated/campaign-final.jpg"
+                width="1122"
+                height="1402"
+                loading="lazy"
+                alt="Туфли, украшенные стразами, в интерьерной съемке"
               />
             </figure>
           </div>
@@ -353,48 +352,63 @@
             <span aria-hidden="true">&#8592;</span>
           </button>
 
-          <div class="reviews-track" id="reviews-track" data-carousel>
-            <article class="review-card review-card--ekaterina">
-              <div class="review-copy">
-                <blockquote>
-                  Через три недели после начала обучения я начала принимать заказы и
-                  ещё до окончания курса окупила его стоимость.
-                </blockquote>
-                <p>Екатерина <span>@_EKATERINA81__</span></p>
-              </div>
-              <div class="review-outcome">
-                <strong>3 недели</strong>
-                <span>до первых заказов</span>
-              </div>
-            </article>
+          <div
+            class="reviews-track"
+            id="reviews-track"
+            data-carousel
+            role="region"
+            aria-roledescription="карусель"
+            aria-label="Отзывы учениц"
+          >
+            <figure class="review-card review-card--collage">
+              <img
+                src="assets/reviews/review-polina.png"
+                width="1011"
+                height="785"
+                loading="lazy"
+                alt="Отзыв Полины и примеры ее работ"
+              />
+            </figure>
 
-            <article class="review-card review-card--polina">
-              <div class="review-copy">
-                <blockquote>
-                  После первых уроков получила первые заказы и заработала на курсе
-                  около 50 тысяч рублей.
-                </blockquote>
-                <p>Полина <span>@POLLY_SHINING</span></p>
-              </div>
-              <div class="review-outcome">
-                <strong>50 000 ₽</strong>
-                <span>во время обучения</span>
-              </div>
-            </article>
+            <figure class="review-card review-card--collage">
+              <img
+                src="assets/reviews/review-mariana.png"
+                width="1000"
+                height="786"
+                loading="lazy"
+                alt="Отзыв Марианы и примеры ее работ"
+              />
+            </figure>
 
-            <article class="review-card review-card--mariana">
-              <div class="review-copy">
-                <blockquote>
-                  Во время курса заработала более 2 тысяч евро и инкрустировала более
-                  100 подушек.
-                </blockquote>
-                <p>Мариана <span>@MARY.BRILL.SS</span></p>
-              </div>
-              <div class="review-outcome">
-                <strong>&gt; 2 000 €</strong>
-                <span>во время обучения</span>
-              </div>
-            </article>
+            <figure class="review-card review-card--collage">
+              <img
+                src="assets/reviews/review-solvita.png"
+                width="1004"
+                height="788"
+                loading="lazy"
+                alt="Отзыв Сольвиты и примеры ее работ"
+              />
+            </figure>
+
+            <figure class="review-card review-card--collage">
+              <img
+                src="assets/reviews/review-maria.png"
+                width="1006"
+                height="786"
+                loading="lazy"
+                alt="Отзыв Марии и примеры ее работ"
+              />
+            </figure>
+
+            <figure class="review-card review-card--collage">
+              <img
+                src="assets/reviews/review-darya.png"
+                width="1008"
+                height="786"
+                loading="lazy"
+                alt="Отзыв Дарьи и примеры ее работ"
+              />
+            </figure>
           </div>
 
           <button
@@ -409,28 +423,44 @@
         </div>
       </section>
 
-      <section class="final-cta" aria-labelledby="final-title">
+      <section class="final-cta" id="final" aria-labelledby="final-title">
         <div class="final-copy reveal">
           <p class="script-word">До встречи</p>
           <h2 id="final-title">Я жду вас на бесплатном обучении</h2>
-          <a
-            class="button button--primary"
-            href="https://r.bothelp.io/tg?domain=ladybrillbot&amp;start=c1773757912502-ds"
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            class="button button--primary button--video"
+            type="button"
+            aria-controls="final-video"
+            data-video-toggle
+            data-video-text-toggle
           >
-            Хочу зарабатывать на хобби
-          </a>
+            Смотреть видео
+          </button>
         </div>
 
-        <div class="final-photo reveal" aria-hidden="true">
-          <img
-            src="assets/generated/campaign-final.jpg"
-            width="1122"
-            height="1402"
-            loading="lazy"
-            alt=""
-          />
+        <div class="final-video reveal" data-video-shell>
+          <video
+            id="final-video"
+            preload="auto"
+            playsinline
+            data-final-video
+            aria-label="Видео Lady Brill"
+          >
+            <source src="assets/video/lady-brill-final.mp4" type="video/mp4" />
+            Ваш браузер не поддерживает воспроизведение видео.
+          </video>
+          <button
+            class="video-play-overlay"
+            type="button"
+            aria-controls="final-video"
+            aria-label="Воспроизвести видео"
+            data-video-toggle
+          >
+            <span class="video-play-overlay__icon" aria-hidden="true"></span>
+            <span class="video-play-overlay__label" data-video-overlay-label>
+              Воспроизвести
+            </span>
+          </button>
         </div>
       </section>
     </main>

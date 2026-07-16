@@ -57,20 +57,102 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
   revealItems.forEach((item) => revealObserver.observe(item));
 }
 
-document.querySelectorAll("[data-carousel-target]").forEach((button) => {
-  button.addEventListener("click", () => {
-    const targetId = button.getAttribute("data-carousel-target");
-    const direction = Number(button.getAttribute("data-direction")) || 1;
-    const carousel = document.getElementById(targetId);
-    if (!carousel) return;
+document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+  const slides = Array.from(carousel.children);
+  const shell = carousel.closest(".carousel-shell");
+  const controls = shell
+    ? Array.from(shell.querySelectorAll(`[data-carousel-target="${carousel.id}"]`))
+    : [];
 
-    const distance = Math.max(280, carousel.clientWidth * 0.76);
-    carousel.scrollBy({
-      left: distance * direction,
-      behavior: reducedMotion ? "auto" : "smooth",
+  if (!slides.length || !controls.length) return;
+
+  let currentIndex = 0;
+
+  const renderCarousel = () => {
+    carousel.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
+    slides.forEach((slide, index) => {
+      slide.setAttribute("aria-hidden", String(index !== currentIndex));
+    });
+  };
+
+  controls.forEach((button) => {
+    button.addEventListener("click", () => {
+      const direction = Number(button.getAttribute("data-direction")) || 1;
+      currentIndex = (currentIndex + direction + slides.length) % slides.length;
+      renderCarousel();
     });
   });
+
+  renderCarousel();
 });
+
+const finalVideo = document.querySelector("[data-final-video]");
+const videoToggles = Array.from(document.querySelectorAll("[data-video-toggle]"));
+const videoTextToggle = document.querySelector("[data-video-text-toggle]");
+const videoOverlayLabel = document.querySelector("[data-video-overlay-label]");
+const videoShell = document.querySelector("[data-video-shell]");
+
+if (finalVideo && videoToggles.length && videoShell) {
+  const setVideoButtons = (textLabel, overlayLabel, isPlaying = false) => {
+    if (videoTextToggle) videoTextToggle.textContent = textLabel;
+    if (videoOverlayLabel) videoOverlayLabel.textContent = overlayLabel;
+    videoToggles.forEach((button) => {
+      button.setAttribute("aria-pressed", String(isPlaying));
+    });
+  };
+
+  const toggleVideo = async () => {
+    if (!finalVideo.paused) {
+      finalVideo.pause();
+      return;
+    }
+
+    finalVideo.controls = true;
+    if (finalVideo.readyState === 0) finalVideo.load();
+
+    try {
+      await finalVideo.play();
+    } catch {
+      finalVideo.muted = true;
+
+      try {
+        await finalVideo.play();
+      } catch {
+        setVideoButtons("Смотреть видео", "Воспроизвести");
+      }
+    }
+  };
+
+  videoToggles.forEach((button) => {
+    button.addEventListener("click", toggleVideo);
+  });
+
+  finalVideo.addEventListener("click", toggleVideo);
+
+  finalVideo.addEventListener("play", () => {
+    videoShell.classList.add("is-playing");
+    setVideoButtons("Пауза", "Пауза", true);
+  });
+
+  finalVideo.addEventListener("pause", () => {
+    videoShell.classList.remove("is-playing");
+    if (!finalVideo.ended) {
+      setVideoButtons("Продолжить видео", "Продолжить");
+    }
+  });
+
+  finalVideo.addEventListener("ended", () => {
+    videoShell.classList.remove("is-playing");
+    setVideoButtons("Смотреть снова", "Смотреть снова");
+  });
+
+  finalVideo.addEventListener("error", () => {
+    videoToggles.forEach((button) => {
+      button.disabled = true;
+    });
+    setVideoButtons("Видео недоступно", "Видео недоступно");
+  });
+}
 
 window.addEventListener("resize", () => {
   if (window.innerWidth > 960) closeMenu();
