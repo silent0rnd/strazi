@@ -1365,6 +1365,33 @@ p {
   color: var(--accent);
 }
 
+.site-author {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: baseline;
+  gap: 0.35em;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+}
+
+.site-author a {
+  font-weight: 600;
+  text-decoration: none;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: color 180ms var(--ease), text-decoration-color 180ms var(--ease);
+}
+
+.site-author a:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
 .reveal {
   opacity: 1;
   transform: none;
