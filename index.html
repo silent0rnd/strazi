@@ -155,23 +155,11 @@
           <h2 id="possibilities-title">Инкрустировать можно любое изделие</h2>
         </div>
 
-        <div class="carousel-shell reveal">
-          <button
-            class="carousel-arrow carousel-arrow--prev"
-            type="button"
-            data-carousel-target="work-gallery"
-            data-direction="-1"
-            aria-label="Предыдущий кадр"
-          >
-            <span aria-hidden="true">&#8592;</span>
-          </button>
-
+        <div class="carousel-shell marquee-shell reveal">
           <div
             class="work-gallery"
             id="work-gallery"
-            data-carousel
             role="region"
-            aria-roledescription="карусель"
             aria-label="Примеры работ"
           >
             <figure class="work-shot work-shot--wide">
@@ -210,17 +198,45 @@
                 alt="Туфли, украшенные стразами, в интерьерной съемке"
               />
             </figure>
-          </div>
 
-          <button
-            class="carousel-arrow carousel-arrow--next"
-            type="button"
-            data-carousel-target="work-gallery"
-            data-direction="1"
-            aria-label="Следующий кадр"
-          >
-            <span aria-hidden="true">&#8594;</span>
-          </button>
+            <!-- дубль ленты для бесшовного цикла -->
+            <figure class="work-shot work-shot--wide" aria-hidden="true">
+              <img
+                src="assets/generated/campaign-gallery.jpg"
+                width="1672"
+                height="941"
+                loading="lazy"
+                alt=""
+              />
+            </figure>
+            <figure class="work-shot work-shot--portrait" aria-hidden="true">
+              <img
+                src="assets/generated/campaign-objects.jpg"
+                width="1122"
+                height="1402"
+                loading="lazy"
+                alt=""
+              />
+            </figure>
+            <figure class="work-shot work-shot--square" aria-hidden="true">
+              <img
+                src="assets/generated/campaign-hero.jpg"
+                width="1536"
+                height="1024"
+                loading="lazy"
+                alt=""
+              />
+            </figure>
+            <figure class="work-shot work-shot--portrait" aria-hidden="true">
+              <img
+                src="assets/generated/campaign-final.jpg"
+                width="1122"
+                height="1402"
+                loading="lazy"
+                alt=""
+              />
+            </figure>
+          </div>
         </div>
       </section>
 
@@ -245,11 +261,11 @@
 
           <div class="author-stats" aria-label="Опыт автора">
             <article>
-              <strong>&gt; 7 500</strong>
+              <strong>&gt; <b data-count="7500">7 500</b></strong>
               <span>вещей инкрустировала</span>
             </article>
             <article>
-              <strong>&gt; 50 000</strong>
+              <strong>&gt; <b data-count="50000">50 000</b></strong>
               <span>кристаллайзеров обучила</span>
             </article>
           </div>
@@ -360,54 +376,124 @@
             aria-roledescription="карусель"
             aria-label="Отзывы учениц"
           >
-            <figure class="review-card review-card--collage">
-              <img
-                src="assets/reviews/review-polina.png"
-                width="1011"
-                height="785"
-                loading="lazy"
-                alt="Отзыв Полины и примеры ее работ"
-              />
+            <figure class="review-card">
+              <figcaption class="review-copy">
+                <p class="review-name">
+                  Полина
+                  <span class="review-nick">@polly_shining</span>
+                </p>
+                <p><strong>Точка А:</strong> любит рукодельничать, но полный новичок в инкрустации, пришла с намерением монетизировать свою работу</p>
+                <p><strong>Точка Б:</strong> после первых уроков получила первые заказы, заработала на курсе около 50 тысяч рублей</p>
+                <p class="review-earned">
+                  <span>Заработала во время обучения</span>
+                  <strong>50 000 ₽</strong>
+                </p>
+              </figcaption>
+              <div class="review-works">
+                <img
+                  src="assets/reviews/review-polina.png"
+                  width="1011"
+                  height="785"
+                  loading="lazy"
+                  alt="Работы Полины: очки, кружки и аксессуары в стразах"
+                />
+              </div>
             </figure>
 
-            <figure class="review-card review-card--collage">
-              <img
-                src="assets/reviews/review-mariana.png"
-                width="1000"
-                height="786"
-                loading="lazy"
-                alt="Отзыв Марианы и примеры ее работ"
-              />
+            <figure class="review-card">
+              <figcaption class="review-copy">
+                <p class="review-name">
+                  Мариана
+                  <span class="review-nick">@mary.brill.ss</span>
+                </p>
+                <p><strong>Точка А:</strong> переехала в другую страну, пришлось забыть о своей профессии и начать работать там, где нужно, а не хочется. Огромное желание работать в удовольствие на себя и творить красоту</p>
+                <p><strong>Точка Б:</strong> во время курса заработала более 2 тысяч евро, инкрустировала более 100 подушек, набралась опыта и навыков для продолжения карьеры</p>
+                <p class="review-earned">
+                  <span>Заработала во время обучения</span>
+                  <strong>&gt; 2 000 €</strong>
+                </p>
+              </figcaption>
+              <div class="review-works">
+                <img
+                  src="assets/reviews/review-mariana.png"
+                  width="1000"
+                  height="786"
+                  loading="lazy"
+                  alt="Работы Марианы: платье, подушки и кружки в стразах"
+                />
+              </div>
             </figure>
 
-            <figure class="review-card review-card--collage">
-              <img
-                src="assets/reviews/review-solvita.png"
-                width="1004"
-                height="788"
-                loading="lazy"
-                alt="Отзыв Сольвиты и примеры ее работ"
-              />
+            <figure class="review-card">
+              <figcaption class="review-copy">
+                <p class="review-name">
+                  Сольвита
+                  <span class="review-nick">@mrs_brilliant_queen</span>
+                </p>
+                <p><strong>Точка А:</strong> пришла с желанием работать со стразами, делать изделия для себя и для дочки, любит блестящее и красивое</p>
+                <p><strong>Точка Б:</strong> заработала 2400 €, вернув деньги и за обучение, и за материалы, взяла ещё заказы</p>
+                <p class="review-earned">
+                  <span>Заработала во время обучения</span>
+                  <strong>2 400 €</strong>
+                </p>
+              </figcaption>
+              <div class="review-works">
+                <img
+                  src="assets/reviews/review-solvita.png"
+                  width="1004"
+                  height="788"
+                  loading="lazy"
+                  alt="Работы Сольвиты: кружка, подушка и декор в стразах"
+                />
+              </div>
             </figure>
 
-            <figure class="review-card review-card--collage">
-              <img
-                src="assets/reviews/review-maria.png"
-                width="1006"
-                height="786"
-                loading="lazy"
-                alt="Отзыв Марии и примеры ее работ"
-              />
+            <figure class="review-card">
+              <figcaption class="review-copy">
+                <p class="review-name">
+                  Мария
+                  <span class="review-nick">@mariy_cristall</span>
+                </p>
+                <p><strong>Точка А:</strong> в декрете, думала обучиться инкрустации для себя</p>
+                <p><strong>Точка Б:</strong> уже на курсе заработала 81 500 рублей: сработало сарафанное радио и пошел поток заказов. Делает то, что нравится, и получает доход</p>
+                <p class="review-earned">
+                  <span>Заработала во время обучения</span>
+                  <strong>81 500 ₽</strong>
+                </p>
+              </figcaption>
+              <div class="review-works">
+                <img
+                  src="assets/reviews/review-maria.png"
+                  width="1006"
+                  height="786"
+                  loading="lazy"
+                  alt="Работы Марии: футболка, чехол и платье в стразах"
+                />
+              </div>
             </figure>
 
-            <figure class="review-card review-card--collage">
-              <img
-                src="assets/reviews/review-darya.png"
-                width="1008"
-                height="786"
-                loading="lazy"
-                alt="Отзыв Дарьи и примеры ее работ"
-              />
+            <figure class="review-card">
+              <figcaption class="review-copy">
+                <p class="review-name">
+                  Дарья
+                  <span class="review-nick">@queen_of_crystals_</span>
+                </p>
+                <p><strong>Точка А:</strong> в жизни нет ничего, кроме работы, нет хобби, но есть тяга к творчеству. Пришла на курс, чтобы найти занятие по душе и монетизировать его</p>
+                <p><strong>Точка Б:</strong> уже во время курса заработала 23 000 рублей, параллельно работая мастером маникюра в плотном графике</p>
+                <p class="review-earned">
+                  <span>Заработала во время обучения</span>
+                  <strong>23 000 ₽</strong>
+                </p>
+              </figcaption>
+              <div class="review-works">
+                <img
+                  src="assets/reviews/review-darya.png"
+                  width="1008"
+                  height="786"
+                  loading="lazy"
+                  alt="Работы Дарьи: чехол, кружки и подвески в стразах"
+                />
+              </div>
             </figure>
           </div>
 

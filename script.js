@@ -40,6 +40,20 @@ if (header) {
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealItems = document.querySelectorAll(".reveal");
 
+const countUp = (element) => {
+  const target = Number(element.dataset.count);
+  const started = performance.now();
+
+  const step = (now) => {
+    const progress = Math.min((now - started) / 1600, 1);
+    const eased = 1 - (1 - progress) ** 3;
+    element.textContent = Math.round(target * eased).toLocaleString("ru-RU");
+    if (progress < 1) requestAnimationFrame(step);
+  };
+
+  requestAnimationFrame(step);
+};
+
 if (reducedMotion || !("IntersectionObserver" in window)) {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 } else {
@@ -48,6 +62,7 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         entry.target.classList.add("is-visible");
+        entry.target.querySelectorAll("[data-count]").forEach(countUp);
         observer.unobserve(entry.target);
       });
     },
@@ -55,6 +70,16 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
   );
 
   revealItems.forEach((item) => revealObserver.observe(item));
+}
+
+if (!reducedMotion && window.matchMedia("(hover: hover)").matches) {
+  document.querySelectorAll(".result-card, .audience-card").forEach((card) => {
+    card.addEventListener("pointermove", (event) => {
+      const bounds = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
+      card.style.setProperty("--my", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+    });
+  });
 }
 
 document.querySelectorAll("[data-carousel]").forEach((carousel) => {

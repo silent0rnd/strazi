@@ -4176,3 +4176,310 @@ img {
     height: 40px;
   }
 }
+
+/* ============ Эффекты: лента работ ============ */
+
+.marquee-shell {
+  --marquee-gap: clamp(14px, 1.6vw, 26px);
+
+  padding: var(--marquee-gap);
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.marquee-shell .work-gallery {
+  display: flex;
+  width: max-content;
+  gap: var(--marquee-gap);
+  transform: none;
+  animation: work-marquee 46s linear infinite;
+}
+
+.marquee-shell:hover .work-gallery,
+.marquee-shell:focus-within .work-gallery {
+  animation-play-state: paused;
+}
+
+.marquee-shell .work-shot {
+  width: clamp(230px, 25vw, 360px);
+  height: clamp(310px, 33vw, 470px);
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 18px;
+}
+
+.marquee-shell .work-shot img {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  filter: brightness(0.82) saturate(0.95);
+  object-fit: cover;
+  transition:
+    transform 620ms var(--ease),
+    filter 420ms ease;
+}
+
+.marquee-shell .work-shot:hover img {
+  filter: brightness(1.06) saturate(1.06);
+  transform: scale(1.07);
+}
+
+@keyframes work-marquee {
+  to {
+    transform: translateX(calc(-50% - (var(--marquee-gap) / 2)));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-shell .work-gallery {
+    animation: none;
+  }
+
+  .marquee-shell {
+    overflow-x: auto;
+  }
+}
+
+/* ============ Эффекты: блик по кристаллам ============ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 span {
+    background-image: linear-gradient(
+      100deg,
+      #ff248a 0 32%,
+      #fff 42%,
+      #ffd9ec 48%,
+      #ff248a 60% 100%
+    );
+    background-size: 280% 100%;
+    animation: crystal-shimmer 6s ease-in-out 1.2s infinite;
+  }
+
+  .author-stats strong {
+    background-image: linear-gradient(
+      100deg,
+      #f6f1f7 0 32%,
+      #fff 41%,
+      #ff62aa 48%,
+      #f6f1f7 60% 100%
+    );
+    background-clip: text;
+    -webkit-background-clip: text;
+    background-size: 280% 100%;
+    -webkit-text-fill-color: transparent;
+    animation: crystal-shimmer 5s ease-in-out infinite;
+  }
+
+  .button--primary,
+  .final-copy .button.button--primary,
+  .button--nav {
+    background-image: linear-gradient(
+      100deg,
+      transparent 0 38%,
+      rgb(255 255 255 / 30%) 47%,
+      rgb(255 145 199 / 24%) 51%,
+      transparent 60% 100%
+    );
+    background-size: 220% 100%;
+    animation: crystal-shimmer 7s ease-in-out infinite;
+  }
+}
+
+@keyframes crystal-shimmer {
+  0% {
+    background-position: 150% 0;
+  }
+
+  42%,
+  100% {
+    background-position: -50% 0;
+  }
+}
+
+/* ============ Эффекты: блик за курсором на карточках ============ */
+
+.results-grid--uniform .result-card::after,
+.audience-card::after {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: auto;
+  height: auto;
+  aspect-ratio: auto;
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 98 170 / 22%),
+    rgb(255 36 138 / 8%) 42%,
+    transparent 72%
+  );
+  clip-path: none;
+  content: "";
+  opacity: 0;
+  pointer-events: none;
+  transform: none;
+  transition: opacity 320ms ease;
+}
+
+.results-grid--uniform .result-card:hover::after,
+.audience-card:hover::after {
+  opacity: 1;
+}
+
+.audience-card--pink::after {
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(255 255 255 / 26%),
+    transparent 70%
+  );
+}
+
+/* ============ Эффекты: темные карточки отзывов ============ */
+
+.reviews .carousel-shell--reviews {
+  width: min(calc(100% - (var(--page-pad) + var(--page-pad))), 1240px);
+  aspect-ratio: auto;
+}
+
+.reviews .review-card {
+  display: grid;
+  width: 100%;
+  min-height: 0;
+  flex: 0 0 100%;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  align-items: stretch;
+  gap: clamp(20px, 2.4vw, 40px);
+  padding: clamp(24px, 2.6vw, 44px);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.review-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(14px, 1.4vw, 20px);
+  padding: 0;
+}
+
+.review-copy p {
+  color: rgb(248 243 248 / 74%);
+  font-family: "Onest", sans-serif;
+  font-size: clamp(15px, 1.15vw, 18px);
+  font-weight: 430;
+  line-height: 1.5;
+}
+
+.review-copy p strong {
+  color: #fff8fc;
+  font-weight: 640;
+}
+
+.review-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  color: #fff9fc !important;
+  font-size: clamp(30px, 2.8vw, 46px) !important;
+  font-weight: 680 !important;
+  letter-spacing: -0.045em;
+  line-height: 1.05 !important;
+  text-transform: uppercase;
+}
+
+.review-nick {
+  padding: 7px 15px 8px;
+  border: 1px solid rgb(255 98 170 / 46%);
+  border-radius: 999px;
+  background: rgb(255 36 138 / 12%);
+  color: var(--accent-bright);
+  font-size: 14px;
+  font-weight: 520;
+  letter-spacing: 0;
+  text-transform: lowercase;
+}
+
+.review-earned {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: clamp(6px, 1vw, 14px);
+  padding-top: clamp(16px, 1.6vw, 24px);
+  border-top: 1px solid rgb(255 255 255 / 14%);
+}
+
+.review-earned span {
+  color: rgb(248 243 248 / 62%);
+  font-size: 14px;
+}
+
+.review-earned strong {
+  color: var(--accent-bright) !important;
+  font-size: clamp(34px, 3.4vw, 54px);
+  font-weight: 760 !important;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.review-works {
+  position: relative;
+  aspect-ratio: 0.74;
+  align-self: center;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 16px;
+}
+
+.review-works img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  border-radius: 0;
+  filter: none;
+  object-fit: cover;
+  object-position: 100% 50%;
+}
+
+@media (max-width: 860px) {
+  .reviews .review-card {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding: 20px;
+  }
+
+  .review-works {
+    aspect-ratio: 0.74;
+    max-height: 46vh;
+    justify-self: center;
+  }
+}
+
+/* стрелки отзывов - в свободную полосу снизу, а не поверх текста */
+.reviews .review-card {
+  padding-bottom: clamp(84px, 7vw, 104px);
+}
+
+.reviews .carousel-arrow {
+  top: auto;
+  bottom: clamp(20px, 2vw, 32px);
+  transform: none;
+}
+
+.reviews .carousel-arrow--prev {
+  right: auto;
+  left: clamp(24px, 2.6vw, 44px);
+}
+
+.reviews .carousel-arrow--next {
+  right: auto;
+  left: calc(clamp(24px, 2.6vw, 44px) + 70px);
+}
+
+/* сброс отступов старой верстки отзывов */
+.review-copy p {
+  margin-top: 0;
+}
