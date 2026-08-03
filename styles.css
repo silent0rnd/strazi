@@ -4483,3 +4483,269 @@ img {
 .review-copy p {
   margin-top: 0;
 }
+
+/* ============ Первый экран: фото растворяется в фоне ============ */
+
+.hero {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hero .hero-copy {
+  position: relative;
+  z-index: 2;
+  width: min(52%, 720px);
+}
+
+.hero .hero-visual {
+  position: absolute;
+  z-index: 1;
+  inset: 0 0 0 auto;
+  width: min(52vw, 880px);
+  height: auto;
+}
+
+.hero .hero-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* световое пятно за моделью */
+.hero .hero-stage::before {
+  position: absolute;
+  top: 6%;
+  right: 6%;
+  z-index: 0;
+  width: 78%;
+  height: 78%;
+  background: radial-gradient(
+    circle at 50% 45%,
+    rgb(255 36 138 / 40%),
+    rgb(140 10 70 / 16%) 42%,
+    transparent 68%
+  );
+  content: "";
+  filter: blur(30px);
+}
+
+/* обертка кадра: никакой рамы, только позиционирование */
+.hero .hero-photo-frame {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  clip-path: none;
+  transform: none;
+}
+
+.hero .hero-photo-frame::after {
+  display: none;
+  content: none;
+}
+
+/* края кадра уходят в фон страницы */
+.hero .hero-photo {
+  position: absolute;
+  right: -4%;
+  bottom: 0;
+  width: auto;
+  height: 88%;
+  aspect-ratio: 1198 / 1250;
+  border-radius: 0;
+  background: url("assets/generated/hero-model.webp") center bottom / contain no-repeat;
+  box-shadow: none;
+  filter: saturate(1.04) contrast(1.02);
+  /* фигура вырезана, растушевывать нужно только линию обреза по низу */
+  -webkit-mask-image: linear-gradient(0deg, transparent 0, #000 13%);
+  mask-image: linear-gradient(0deg, transparent 0, #000 13%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero .hero-photo {
+    animation: hero-push 26s ease-in-out infinite alternate;
+    transform-origin: 60% bottom;
+  }
+}
+
+@keyframes hero-push {
+  to {
+    transform: scale(1.06);
+  }
+}
+
+@media (max-width: 1020px) {
+  .hero {
+    min-height: auto;
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding-bottom: clamp(30px, 5vw, 56px);
+  }
+
+  .hero .hero-copy {
+    width: 100%;
+    height: auto;
+    /* отступ был нужен, когда фото лежало фоном под текстом */
+    padding-top: 0;
+    justify-content: flex-start;
+  }
+
+  .hero .hero-visual {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: clamp(320px, 52vw, 460px);
+    margin-top: clamp(18px, 4vw, 36px);
+  }
+
+  .hero .hero-photo {
+    right: 50%;
+    height: 100%;
+    transform: translateX(50%);
+  }
+}
+
+@media (max-width: 760px) {
+  /* "ИНКРУСТАЦИИ" не помещалось в экран и обрезалось */
+  .hero h1 {
+    font-size: clamp(38px, 10.6vw, 60px);
+  }
+}
+
+@media (max-width: 760px) {
+  /* слово "БЕСПЛАТНОМ" было шире экрана и распирало страницу вбок */
+  .final-copy {
+    min-width: 0;
+  }
+
+  .final-copy h2 {
+    font-size: clamp(34px, 10.4vw, 54px);
+  }
+}
+
+@media (max-width: 760px) {
+  /* та же история: "БЕСПЛАТНОМ" вылезало за пределы блока */
+  .audience-intro h2 {
+    font-size: clamp(34px, 10.4vw, 54px);
+  }
+}
+
+/* ============ Блок доверия: медальоны вместо плиток ============ */
+
+@property --ring-a {
+  syntax: "<angle>";
+  initial-value: 210deg;
+  inherits: false;
+}
+
+@keyframes ring-spin {
+  to {
+    --ring-a: 570deg;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* разные скорости и фазы, чтобы кольца не пульсировали в такт */
+  .trust-item::before {
+    animation: ring-spin 26s linear infinite;
+  }
+
+  .trust-item:nth-child(2)::before {
+    animation-duration: 31s;
+    animation-delay: -9s;
+  }
+
+  .trust-item:nth-child(3)::before {
+    animation-duration: 28s;
+    animation-delay: -17s;
+  }
+}
+
+.trust-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(20px, 3vw, 54px);
+  padding: clamp(18px, 2vw, 30px) 0;
+}
+
+.trust-item {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: clamp(72px, 6.4vw, 92px) minmax(0, 1fr);
+  /* вторая строка зарезервирована под подпись, чтобы заголовки шли по одной линии */
+  grid-template-rows: auto minmax(24px, auto);
+  align-content: center;
+  gap: 2px clamp(16px, 1.6vw, 22px);
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.trust-item + .trust-item {
+  border: 0;
+}
+
+/* металлическое кольцо-печать */
+.trust-item::before {
+  width: clamp(72px, 6.4vw, 92px);
+  height: clamp(72px, 6.4vw, 92px);
+  grid-row: 1 / -1;
+  grid-column: 1;
+  align-self: center;
+  border-radius: 50%;
+  background:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M6%202h8l4%204v16H6z%22%2F%3E%3Cpath%20d%3D%22M14%202v4h4%22%2F%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%2214%22%20r%3D%222.6%22%2F%3E%3Cpath%20d%3D%22M10.4%2016.4%209.8%2021l2.2-1.2%202.2%201.2-.6-4.6%22%2F%3E%3C%2Fsvg%3E") center / 34% no-repeat,
+    radial-gradient(circle at 50% 50%, #1b1420 0 58%, transparent 59%),
+    conic-gradient(from var(--ring-a), #ff248a, #fdfbff 22%, #ff62aa 46%, #8f8996 68%, #ff248a);
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 12%),
+    0 14px 34px rgb(83 2 41 / 40%);
+  content: "";
+}
+
+.trust-item:nth-child(2)::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Crect%20x%3D%223%22%20y%3D%229%22%20width%3D%2218%22%20height%3D%2212%22%20rx%3D%222%22%2F%3E%3Cpath%20d%3D%22M3%2013.5h18M12%209v12%22%2F%3E%3Cpath%20d%3D%22M12%209C10.4%206%206%205.2%206%207.4%206%209%209.6%209%2012%209zM12%209c1.6-3%206-3.8%206-1.6C18%209%2014.4%209%2012%209z%22%2F%3E%3C%2Fsvg%3E"),
+    radial-gradient(circle at 50% 50%, #1b1420 0 58%, transparent 59%),
+    conic-gradient(from var(--ring-a), #ff248a, #fdfbff 22%, #ff62aa 46%, #8f8996 68%, #ff248a);
+}
+
+.trust-item:nth-child(3)::before {
+  background-image:
+    url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.4%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Ccircle%20cx%3D%2212%22%20cy%3D%229%22%20r%3D%226%22%2F%3E%3Cpath%20d%3D%22m8.6%2014.4-1.4%207.2%204.8-2.6%204.8%202.6-1.4-7.2%22%2F%3E%3C%2Fsvg%3E"),
+    radial-gradient(circle at 50% 50%, #1b1420 0 58%, transparent 59%),
+    conic-gradient(from var(--ring-a), #ff248a, #fdfbff 22%, #ff62aa 46%, #8f8996 68%, #ff248a);
+}
+
+.trust-item strong,
+.trust-item:nth-child(2) strong {
+  max-width: 15ch;
+  grid-column: 2;
+  align-self: end;
+  font-size: clamp(19px, 1.45vw, 25px);
+}
+
+.trust-item span {
+  margin-top: 7px;
+  grid-column: 2;
+  align-self: start;
+}
+
+@media (max-width: 760px) {
+  .trust-strip {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+
+  .trust-item {
+    min-height: 0;
+    padding: 0;
+  }
+}
