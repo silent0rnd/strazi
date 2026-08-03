@@ -41,14 +41,28 @@ const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matc
 const revealItems = document.querySelectorAll(".reveal");
 
 const countUp = (element) => {
+  if (element.dataset.counted) return;
+  element.dataset.counted = "1";
+
   const target = Number(element.dataset.count);
   const started = performance.now();
+
+  // ширину резервируем по итоговому числу, иначе строка дергается, пока набегают разряды
+  element.style.display = "inline-block";
+  element.style.minWidth = `${element.getBoundingClientRect().width}px`;
+  element.style.textAlign = "right";
 
   const step = (now) => {
     const progress = Math.min((now - started) / 1600, 1);
     const eased = 1 - (1 - progress) ** 3;
     element.textContent = Math.round(target * eased).toLocaleString("ru-RU");
-    if (progress < 1) requestAnimationFrame(step);
+
+    if (progress < 1) {
+      requestAnimationFrame(step);
+      return;
+    }
+
+    element.style.minWidth = "";
   };
 
   requestAnimationFrame(step);
@@ -59,17 +73,36 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
 } else {
   const revealObserver = new IntersectionObserver(
     (entries, observer) => {
+      // соседи попадают в экран одним пакетом: разводим их по времени, чтобы шел каскад.
+      // задержка тут, а не в transition-delay: ту наследовал ховер-наклон карточек
+      let order = 0;
+
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-visible");
-        entry.target.querySelectorAll("[data-count]").forEach(countUp);
         observer.unobserve(entry.target);
+
+        const delay = Math.min(order * 90, 540);
+        order += 1;
+
+        setTimeout(() => {
+          entry.target.classList.add("is-visible");
+          entry.target.querySelectorAll("[data-count]").forEach((counter) => {
+            // соседние слайды карусели ждут своей очереди, иначе сгорят вхолостую
+            if (counter.closest('[aria-hidden="true"]')) return;
+            countUp(counter);
+          });
+        }, delay);
       });
     },
     { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
   );
 
   revealItems.forEach((item) => revealObserver.observe(item));
+
+  // первый экран не проявляется по скроллу, счетчик запускаем после его выезда
+  setTimeout(() => {
+    document.querySelectorAll(".hero [data-count]").forEach(countUp);
+  }, 520);
 }
 
 // наклон и подсветка запускаются пользователем и работают даже при reduce
@@ -111,23 +144,99 @@ document.querySelectorAll("[data-carousel]").forEach((carousel) => {
   if (!slides.length || !controls.length) return;
 
   let currentIndex = 0;
+  let timer = 0;
+  let stopped = false;
+
+  const dotStrip = document.createElement("div");
+  dotStrip.className = "carousel-dots";
+
+  const dots = slides.map((_, index) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "carousel-dot";
+    dot.setAttribute("aria-label", `Перейти к слайду ${index + 1}`);
+    dot.addEventListener("click", () => {
+      stopAuto(true);
+      goTo(index);
+    });
+    dotStrip.append(dot);
+    return dot;
+  });
+
+  if (shell && slides.length > 1) shell.append(dotStrip);
 
   const renderCarousel = () => {
     carousel.style.transform = `translate3d(-${currentIndex * 100}%, 0, 0)`;
     slides.forEach((slide, index) => {
       slide.setAttribute("aria-hidden", String(index !== currentIndex));
     });
+    dots.forEach((dot, index) => {
+      dot.classList.toggle("is-active", index === currentIndex);
+      dot.setAttribute("aria-current", String(index === currentIndex));
+    });
+    // до появления секции на экране счетчики не трогаем: анимацию никто не увидит
+    if (!reducedMotion && (!shell || shell.classList.contains("is-visible"))) {
+      slides[currentIndex].querySelectorAll("[data-count]").forEach(countUp);
+    }
+  };
+
+  const goTo = (index) => {
+    currentIndex = (index + slides.length) % slides.length;
+    renderCarousel();
+  };
+
+  const stopAuto = (permanent) => {
+    if (permanent) stopped = true;
+    clearInterval(timer);
+    timer = 0;
+  };
+
+  const startAuto = () => {
+    if (stopped || timer || reducedMotion || slides.length < 2) return;
+    timer = setInterval(() => goTo(currentIndex + 1), 7000);
   };
 
   controls.forEach((button) => {
     button.addEventListener("click", () => {
-      const direction = Number(button.getAttribute("data-direction")) || 1;
-      currentIndex = (currentIndex + direction + slides.length) % slides.length;
-      renderCarousel();
+      stopAuto(true);
+      goTo(currentIndex + (Number(button.getAttribute("data-direction")) || 1));
     });
   });
 
+  // свайп только для пальца и пера: у мыши перетаскивание конфликтует с выделением текста
+  let startX = 0;
+  let tracking = false;
+
+  carousel.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse") return;
+    startX = event.clientX;
+    tracking = true;
+  });
+
+  carousel.addEventListener("pointerup", (event) => {
+    if (!tracking) return;
+    tracking = false;
+
+    const delta = event.clientX - startX;
+    if (Math.abs(delta) < 45) return;
+
+    stopAuto(true);
+    goTo(currentIndex + (delta < 0 ? 1 : -1));
+  });
+
+  carousel.addEventListener("pointercancel", () => {
+    tracking = false;
+  });
+
+  if (shell) {
+    shell.addEventListener("pointerenter", () => stopAuto(false));
+    shell.addEventListener("pointerleave", startAuto);
+    shell.addEventListener("focusin", () => stopAuto(false));
+    shell.addEventListener("focusout", startAuto);
+  }
+
   renderCarousel();
+  startAuto();
 });
 
 const finalVideo = document.querySelector("[data-final-video]");
@@ -201,3 +310,44 @@ if (finalVideo && videoToggles.length && videoShell) {
 window.addEventListener("resize", () => {
   if (window.innerWidth > 960) closeMenu();
 });
+
+// искра за курсором и магнитные кнопки: только для точного указателя
+if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+  if (!reducedMotion) {
+    const spark = document.createElement("div");
+    spark.className = "cursor-spark";
+    spark.setAttribute("aria-hidden", "true");
+    document.body.append(spark);
+
+    document.addEventListener("pointermove", (event) => {
+      spark.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+      spark.classList.add("is-active");
+    });
+
+    document.addEventListener("pointerleave", () => spark.classList.remove("is-active"));
+  }
+
+  // сильнее нельзя: кнопка уезжает из-под курсора, ловит pointerleave и дребезжит
+  const pull = 0.18;
+  const maxPull = 14;
+  const clamp = (value) => Math.max(-maxPull, Math.min(maxPull, value * pull));
+
+  document.querySelectorAll(".button--primary, .header-cta").forEach((button) => {
+    button.addEventListener("pointermove", (event) => {
+      const bounds = button.getBoundingClientRect();
+      button.style.setProperty(
+        "--pull-x",
+        `${clamp(event.clientX - bounds.left - bounds.width / 2)}px`
+      );
+      button.style.setProperty(
+        "--pull-y",
+        `${clamp(event.clientY - bounds.top - bounds.height / 2)}px`
+      );
+    });
+
+    button.addEventListener("pointerleave", () => {
+      button.style.setProperty("--pull-x", "0px");
+      button.style.setProperty("--pull-y", "0px");
+    });
+  });
+}

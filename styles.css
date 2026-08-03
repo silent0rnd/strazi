@@ -1017,7 +1017,7 @@ p {
 }
 
 .author h2 {
-  max-width: 11ch;
+  max-width: 10ch;
 }
 
 .author-role {
@@ -1410,27 +1410,8 @@ p {
   transform: translateY(0);
 }
 
-/* плитки .results-grid здесь не задерживаем: этот transition-delay наследовался
-   и ховер-наклоном, из-за чего карточки 2-5 реагировали на курсор с опозданием */
-.js .audience-grid .reveal:nth-child(2) {
-  transition-delay: 70ms;
-}
-
-.js .audience-grid .reveal:nth-child(3) {
-  transition-delay: 120ms;
-}
-
-.js .audience-grid .reveal:nth-child(4) {
-  transition-delay: 170ms;
-}
-
-.js .audience-grid .reveal:nth-child(5) {
-  transition-delay: 220ms;
-}
-
-.js .audience-grid .reveal:nth-child(6) {
-  transition-delay: 270ms;
-}
+/* каскадной задержки появления у плиток нет: transition-delay наследовался
+   ховер-наклоном, и карточки реагировали на курсор с опозданием */
 
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy > * {
@@ -1961,7 +1942,7 @@ p {
   }
 
   .author h2 {
-    max-width: 11ch;
+    max-width: 10ch;
   }
 
   .author-stats {
@@ -4884,7 +4865,19 @@ img {
     box-shadow 320ms ease;
 }
 
+/* тот же ховер, что и у плиток "что вы получите" */
+.js .audience-grid .audience-card {
+  transition:
+    transform 320ms ease,
+    box-shadow 320ms ease;
+}
+
+.js .audience-grid .audience-card:hover {
+  box-shadow: 0 34px 74px rgb(83 2 41 / 46%);
+}
+
 /* у каждой карточки своя точка схода: общая перспектива на сетке перекашивала дальние плитки */
+.js .audience-grid .audience-card.is-visible,
 .js .results-grid--uniform .result-card.is-visible {
   transform:
     perspective(700px)
@@ -4928,6 +4921,259 @@ img {
   }
 }
 
+
+/* ============ Живой фон: дрейфующие световые пятна ============ */
+
+/* цвет страницы держит html, поэтому слой с пятнами уходит под контент,
+   но остается над фоном страницы */
+body {
+  background: none;
+}
+
+body::before {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background:
+    radial-gradient(circle at 16% 18%, rgb(255 36 138 / 16%), transparent 24%),
+    radial-gradient(circle at 78% 62%, rgb(255 98 170 / 12%), transparent 22%),
+    radial-gradient(circle at 42% 92%, rgb(163 22 106 / 11%), transparent 20%);
+  content: "";
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body::before {
+    animation: bg-drift 38s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+}
+
+@keyframes bg-drift {
+  to {
+    transform: translate3d(2.6vmax, -2vmax, 0) scale(1.14);
+  }
+}
+
+/* ============ Каскад появления ============ */
+
+/* плиткам вернули переход прозрачности: их transition перебивала
+   ховер-анимация наклона и карточки просто возникали */
+.js .results-grid--uniform .result-card,
+.js .audience-grid .audience-card {
+  transition:
+    opacity 620ms var(--ease),
+    transform 320ms ease,
+    box-shadow 320ms ease;
+}
+
+/* ============ Искра за курсором ============ */
+
+.cursor-spark {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 90;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 320ms ease,
+    width 260ms var(--ease),
+    height 260ms var(--ease);
+  will-change: transform;
+}
+
+.cursor-spark.is-active {
+  opacity: 0.9;
+}
+
+/* курсор растет рядом с кликабельным */
+body:has(a:hover, button:hover) .cursor-spark {
+  width: 42px;
+  height: 42px;
+  margin: -21px 0 0 -21px;
+  opacity: 1;
+}
+
+.cursor-spark::before {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 50% 50%, rgb(255 255 255 / 95%), transparent 58%),
+    conic-gradient(from 0deg, #ff248a, #fff, #ff62aa, #ffd9ec, #ff248a);
+  clip-path: polygon(
+    50% 0,
+    61% 39%,
+    100% 50%,
+    61% 61%,
+    50% 100%,
+    39% 61%,
+    0 50%,
+    39% 39%
+  );
+  content: "";
+  filter: drop-shadow(0 0 6px rgb(255 36 138 / 70%));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cursor-spark::before {
+    animation: spark-spin 3.6s linear infinite;
+  }
+}
+
+@keyframes spark-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ Магнитные кнопки ============ */
+
+.js .button--primary,
+.js .button--primary:hover,
+.js .button--primary:focus-visible,
+.js .header-cta,
+.js .header-cta:hover,
+.js .header-cta:focus-visible {
+  transform: translate3d(var(--pull-x, 0px), var(--pull-y, 0px), 0);
+  transition:
+    transform 420ms var(--ease),
+    border-color 240ms ease,
+    background 240ms ease,
+    box-shadow 240ms ease,
+    color 240ms ease;
+}
+
+.js .button--primary:hover,
+.js .header-cta:hover {
+  transition-duration: 110ms;
+}
+
+/* ============ Точки-индикаторы карусели ============ */
+
+.carousel-shell {
+  position: relative;
+}
+
+.carousel-dots {
+  position: absolute;
+  right: clamp(20px, 2.4vw, 40px);
+  bottom: clamp(18px, 2vw, 30px);
+  z-index: 3;
+  display: flex;
+  gap: 2px;
+}
+
+.carousel-dot {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  place-items: center;
+}
+
+.carousel-dot::before {
+  width: 9px;
+  height: 9px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+  content: "";
+  transition:
+    width 340ms var(--ease),
+    background 240ms ease,
+    border-color 240ms ease;
+}
+
+.carousel-dot:hover::before {
+  border-color: var(--accent-bright);
+}
+
+.carousel-dot.is-active::before {
+  width: 24px;
+  border-color: transparent;
+  background: linear-gradient(90deg, var(--accent), var(--accent-bright));
+  box-shadow: 0 0 14px rgb(255 36 138 / 60%);
+}
+
+/* ============ Счетчики ============ */
+
+.hero-lead strong b,
+.review-earned strong b {
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ Розовый скроллбар ============ */
+
+html {
+  scrollbar-color: var(--accent) transparent;
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3.5px solid transparent;
+  border-radius: 999px;
+  background: var(--accent);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-bright);
+  background-clip: content-box;
+}
+
+/* ============ Блик под пунктом меню ============ */
+
+.site-nav a::after,
+.site-header.is-compact .site-nav a::after {
+  height: 2px;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgb(255 36 138 / 80%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .site-nav a:hover::after,
+  .site-nav a:focus-visible::after,
+  .site-header.is-compact .site-nav a:hover::after,
+  .site-header.is-compact .site-nav a:focus-visible::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--accent-bright) 30%,
+      #fff 50%,
+      var(--accent-bright) 70%,
+      transparent
+    );
+    background-size: 220% 100%;
+    animation: nav-shine 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes nav-shine {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
+}
 
 /* ============ Наведение работает и при отключенной анимации ============ */
 
