@@ -72,12 +72,31 @@ if (reducedMotion || !("IntersectionObserver" in window)) {
   revealItems.forEach((item) => revealObserver.observe(item));
 }
 
-if (!reducedMotion && window.matchMedia("(hover: hover)").matches) {
+// наклон и подсветка запускаются пользователем и работают даже при reduce
+if (window.matchMedia("(hover: hover)").matches) {
+  const maxTilt = 13;
+
   document.querySelectorAll(".result-card, .audience-card").forEach((card) => {
     card.addEventListener("pointermove", (event) => {
       const bounds = card.getBoundingClientRect();
-      card.style.setProperty("--mx", `${((event.clientX - bounds.left) / bounds.width) * 100}%`);
-      card.style.setProperty("--my", `${((event.clientY - bounds.top) / bounds.height) * 100}%`);
+      const x = (event.clientX - bounds.left) / bounds.width;
+      const y = (event.clientY - bounds.top) / bounds.height;
+
+      card.style.setProperty("--mx", `${x * 100}%`);
+      card.style.setProperty("--my", `${y * 100}%`);
+
+      // ось наклона перпендикулярна вектору от центра карточки к курсору
+      const dx = (x - 0.5) * 2;
+      const dy = (y - 0.5) * 2;
+      card.style.setProperty("--tilt-x", `${-dy}`);
+      card.style.setProperty("--tilt-y", `${dx}`);
+      card.style.setProperty("--tilt", `${Math.min(Math.hypot(dx, dy), 1) * maxTilt}deg`);
+      card.style.setProperty("--tilt-scale", "1.02");
+    });
+
+    card.addEventListener("pointerleave", () => {
+      card.style.setProperty("--tilt", "0deg");
+      card.style.setProperty("--tilt-scale", "1");
     });
   });
 }
