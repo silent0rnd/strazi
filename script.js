@@ -53,7 +53,7 @@ const countUp = (element) => {
   element.style.textAlign = "right";
 
   const step = (now) => {
-    const progress = Math.min((now - started) / 1600, 1);
+    const progress = Math.min((now - started) / 3200, 1);
     const eased = 1 - (1 - progress) ** 3;
     element.textContent = Math.round(target * eased).toLocaleString("ru-RU");
 
@@ -349,5 +349,42 @@ if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
       button.style.setProperty("--pull-x", "0px");
       button.style.setProperty("--pull-y", "0px");
     });
+  });
+}
+
+// лайтбокс галереи работ
+const workGallery = document.getElementById("work-gallery");
+const lightbox = document.getElementById("lightbox");
+
+if (workGallery && lightbox) {
+  const lightboxImg = lightbox.querySelector("img");
+
+  workGallery.querySelectorAll("img").forEach((img) => {
+    img.tabIndex = 0;
+    img.setAttribute("role", "button");
+  });
+
+  const openLightbox = (img) => {
+    lightboxImg.src = img.currentSrc || img.src;
+    lightboxImg.alt = img.alt || "Пример работы";
+    lightbox.showModal();
+  };
+
+  workGallery.addEventListener("click", (event) => {
+    const img = event.target.closest("img");
+    if (img) openLightbox(img);
+  });
+
+  workGallery.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    const img = event.target.closest("img");
+    if (!img) return;
+    event.preventDefault();
+    openLightbox(img);
+  });
+
+  // всё, кроме самой картинки — это фон и крестик
+  lightbox.addEventListener("click", (event) => {
+    if (event.target !== lightboxImg) lightbox.close();
   });
 }
