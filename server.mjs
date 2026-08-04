@@ -14,8 +14,9 @@ const mimeTypes = {
   ".js": "text/javascript; charset=utf-8",
   ".mp4": "video/mp4",
   ".png": "image/png",
-  ".ttf": "font/ttf",
+  ".svg": "image/svg+xml",
   ".webp": "image/webp",
+  ".woff2": "font/woff2",
 };
 
 createServer(async (request, response) => {

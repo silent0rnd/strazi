@@ -268,6 +268,26 @@ const videoOverlayLabel = document.querySelector("[data-video-overlay-label]");
 const videoShell = document.querySelector("[data-video-shell]");
 
 if (finalVideo && videoToggles.length && videoShell) {
+  // атрибут poster качается сразу, даже при preload="none": ставим его,
+  // когда блок подходит к экрану, иначе 91 КБ висят в критическом пути
+  const setPoster = () => {
+    if (finalVideo.poster || !finalVideo.dataset.poster) return;
+    finalVideo.poster = finalVideo.dataset.poster;
+  };
+
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        setPoster();
+      },
+      { rootMargin: "400px" }
+    ).observe(videoShell);
+  } else {
+    setPoster();
+  }
+
   const setVideoButtons = (textLabel, overlayLabel, isPlaying = false) => {
     if (videoTextToggle) videoTextToggle.textContent = textLabel;
     if (videoOverlayLabel) videoOverlayLabel.textContent = overlayLabel;
@@ -381,7 +401,9 @@ const lightbox = document.getElementById("lightbox");
 if (workGallery && lightbox) {
   const lightboxImg = lightbox.querySelector("img");
 
-  workGallery.querySelectorAll(".work-shot").forEach((shot) => {
+  // дубли ленты помечены aria-hidden: делать их фокусируемыми нельзя,
+  // иначе фокус уходит в контент, объявленный скринридеру несуществующим
+  workGallery.querySelectorAll(".work-shot:not([aria-hidden])").forEach((shot) => {
     shot.tabIndex = 0;
     shot.setAttribute("role", "button");
   });
@@ -398,13 +420,21 @@ if (workGallery && lightbox) {
   };
 
   // у img глобально pointer-events: none, поэтому цель клика — сама карточка
+  let lastTrigger = null;
+
   const openLightbox = (shot) => {
     const img = shot.querySelector("img");
     if (!img) return;
     const index = shots.findIndex((item) => item.src === img.src);
     show(index < 0 ? 0 : index);
+    lastTrigger = shot;
     lightbox.showModal();
   };
+
+  // диалог открывают кликом, поэтому браузеру некуда вернуть фокус самому
+  lightbox.addEventListener("close", () => {
+    if (lastTrigger && lastTrigger.isConnected) lastTrigger.focus();
+  });
 
   workGallery.addEventListener("click", (event) => {
     const shot = event.target.closest(".work-shot");
@@ -451,9 +481,10 @@ if (tryonShell) {
   const draw = () => {
     const value = Number(range.value);
     stage.style.setProperty("--reveal", `${value}%`);
-    // метка без своей половины кадра только мешает
+    // метка без своей половины кадра только мешает. Порог включает стартовое
+    // значение ползунка: иначе "после" висит над полосой, где ещё пусто
     stage.classList.toggle("is-full", value > 88);
-    stage.classList.toggle("is-empty", value < 12);
+    stage.classList.toggle("is-empty", value <= 12);
     // CTA отдаем тому, кто довел показ до конца, а не просто дернул ползунок
     if (done) done.hidden = value < 92;
   };

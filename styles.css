@@ -1906,7 +1906,7 @@ p {
 
 @font-face {
   font-family: "Onest";
-  src: url("assets/fonts/Onest-Variable.ttf") format("truetype");
+  src: url("assets/fonts/Onest-Variable.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -1914,7 +1914,7 @@ p {
 
 @font-face {
   font-family: "Marck Script";
-  src: url("assets/fonts/MarckScript-Regular.ttf") format("truetype");
+  src: url("assets/fonts/MarckScript-Regular.woff2") format("woff2");
   font-style: normal;
   font-weight: 400;
   font-display: swap;
@@ -1924,7 +1924,7 @@ p {
    на Windows и macOS, на iOS заголовки падали в Helvetica обычной ширины */
 @font-face {
   font-family: "Roboto Condensed";
-  src: url("assets/fonts/RobotoCondensed-Variable.ttf") format("truetype");
+  src: url("assets/fonts/RobotoCondensed-Variable.woff2") format("woff2");
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
@@ -2603,14 +2603,6 @@ body {
 
 /* Feedback revision */
 
-@font-face {
-  font-family: "Tenor Sans";
-  src: url("assets/fonts/TenorSans-Regular.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-}
-
 :root {
   color-scheme: dark;
   --bg: #100c12;
@@ -2655,7 +2647,7 @@ body {
 .site-header.is-compact .site-nav a {
   padding-block: 16px;
   color: rgb(248 242 248 / 88%);
-  font-family: "Tenor Sans", "Segoe UI", sans-serif;
+  font-family: "Onest", "Segoe UI", sans-serif;
   font-size: clamp(13px, 0.84vw, 15px);
   font-weight: 400;
   letter-spacing: 0.015em;
@@ -2689,7 +2681,7 @@ body {
 .button {
   min-height: 58px;
   padding-inline: 32px;
-  font-family: "Tenor Sans", "Segoe UI", sans-serif;
+  font-family: "Onest", "Segoe UI", sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.035em;
@@ -2825,7 +2817,7 @@ body {
 .trust-item strong {
   display: block;
   color: #f8f3f8;
-  font-family: "Tenor Sans", "Segoe UI", sans-serif;
+  font-family: "Onest", "Segoe UI", sans-serif;
   font-size: clamp(20px, 1.6vw, 28px);
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -2876,7 +2868,6 @@ body {
   scroll-snap-type: none;
   scrollbar-width: none;
   transition: transform 440ms var(--ease);
-  will-change: transform;
 }
 
 .carousel-shell .work-gallery::-webkit-scrollbar,
@@ -2993,7 +2984,7 @@ body {
   .site-header.is-compact .site-nav a {
     padding-block: 15px;
     color: var(--ink);
-    font-family: "Tenor Sans", "Segoe UI", sans-serif;
+    font-family: "Onest", "Segoe UI", sans-serif;
     font-size: clamp(23px, 5vw, 38px);
     text-shadow: none;
   }
@@ -5605,4 +5596,17 @@ p,
 .is-idle *::before,
 .is-idle *::after {
   animation-play-state: paused !important;
+}
+
+/* ============ Pass 6: производительность и семантика ============ */
+
+/* will-change — подсказка на время анимации: вне экрана слой не нужен */
+.is-idle,
+.is-idle * {
+  will-change: auto !important;
+}
+
+/* плитки ленты открывают лайтбокс — курсор должен об этом говорить */
+.marquee-shell .work-shot {
+  cursor: zoom-in;
 }
