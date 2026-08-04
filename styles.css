@@ -5010,22 +5010,31 @@ html {
 
 /* ============ Лайтбокс галереи ============ */
 
-.work-shot img {
+.work-shot {
   cursor: zoom-in;
 }
 
-.work-shot img:focus-visible {
-  outline: 2px solid var(--ink);
+.work-shot:focus-visible {
+  outline: 2px solid #fff;
   outline-offset: 3px;
 }
 
 .lightbox {
-  max-width: 100vw;
-  max-height: 100vh;
-  padding: clamp(16px, 4vw, 48px);
+  display: none;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100%;
+  padding: 64px clamp(12px, 4vw, 48px) clamp(12px, 4vw, 48px);
   border: 0;
   background: transparent;
   overscroll-behavior: contain;
+}
+
+.lightbox[open] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .lightbox::backdrop {
@@ -5035,19 +5044,21 @@ html {
 
 .lightbox img {
   display: block;
-  max-width: min(1200px, 100%);
-  max-height: 90vh;
-  margin: auto;
+  max-width: min(1200px, calc(100% - 2 * clamp(56px, 8vw, 96px)));
+  max-height: 100%;
   border-radius: 14px;
   box-shadow: 0 30px 80px rgb(0 0 0 / 55%);
   object-fit: contain;
   cursor: default;
+
+  /* перебиваем глобальное img { pointer-events: none } — иначе клик по фото уходит в фон */
+  pointer-events: auto;
 }
 
 .lightbox-close {
-  position: fixed;
-  top: 16px;
-  right: 16px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
   width: 44px;
   height: 44px;
   border: 1px solid rgb(255 255 255 / 25%);
@@ -5060,8 +5071,58 @@ html {
   transition: background 200ms ease;
 }
 
-.lightbox-close:hover {
+.lightbox-close:hover,
+.lightbox-nav:hover {
   background: rgb(255 255 255 / 22%);
+}
+
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  width: 48px;
+  height: 48px;
+  border: 1px solid rgb(255 255 255 / 25%);
+  border-radius: 50%;
+  background: rgb(255 255 255 / 10%);
+  color: #fff;
+  font-size: 30px;
+  line-height: 1;
+  transform: translateY(-50%);
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.lightbox-nav--prev {
+  left: clamp(8px, 2vw, 28px);
+}
+
+.lightbox-nav--next {
+  right: clamp(8px, 2vw, 28px);
+}
+
+/* на узком экране стрелки по бокам съедают фото — уводим их под него */
+@media (max-width: 600px) {
+  .lightbox {
+    padding: 60px 12px 76px;
+  }
+
+  .lightbox img {
+    max-width: 100%;
+  }
+
+  .lightbox-nav {
+    top: auto;
+    bottom: 14px;
+    transform: none;
+  }
+
+  .lightbox-nav--prev {
+    left: calc(50% - 60px);
+  }
+
+  .lightbox-nav--next {
+    right: calc(50% - 60px);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -5084,5 +5145,352 @@ html {
 @keyframes lightbox-fade {
   from {
     opacity: 0;
+  }
+}
+
+/* ── интерактивная примерочная: ползунок "до/после" ───────────────────── */
+
+.tryon-shell {
+  display: grid;
+  gap: clamp(22px, 2.6vw, 34px);
+}
+
+.tryon-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tryon-tab {
+  padding: 11px 28px 12px;
+  border: 1px solid rgb(255 255 255 / 16%);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 4%);
+  color: rgb(248 243 248 / 72%);
+  cursor: pointer;
+  font-family: "Onest", sans-serif;
+  font-size: 15px;
+  font-weight: 520;
+  letter-spacing: -0.01em;
+  transition:
+    border-color 240ms ease,
+    background 240ms ease,
+    color 240ms ease;
+}
+
+.tryon-tab:hover,
+.tryon-tab:focus-visible {
+  border-color: rgb(255 98 170 / 55%);
+  color: #fff9fc;
+}
+
+.tryon-tab.is-active {
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--accent), var(--accent-bright));
+  box-shadow: 0 12px 30px rgb(255 36 138 / 26%);
+  color: #fff;
+}
+
+.tryon-body {
+  display: grid;
+  grid-template-columns: minmax(0, 620px) minmax(0, 1fr);
+  grid-template-areas:
+    "stage head"
+    "stage side";
+  align-content: start;
+  justify-content: space-between;
+  column-gap: clamp(32px, 5vw, 92px);
+  row-gap: clamp(20px, 2.2vw, 30px);
+  width: 100%;
+}
+
+.tryon-stage {
+  grid-area: stage;
+}
+
+.tryon-head {
+  grid-area: head;
+  align-self: end;
+}
+
+.tryon-side {
+  grid-area: side;
+}
+
+.tryon-stage {
+  --reveal: 12%;
+
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+/* витрина под цвет фона снимков: край фотографии растворяется в панели.
+   обрезка живет тут, а не на сцене, иначе хват срезается на краях шкалы */
+.tryon-frame {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border: 1.6px solid transparent;
+  border-radius: var(--radius);
+  background:
+    linear-gradient(180deg, #f3f0f5, #e9e5ee) padding-box,
+    conic-gradient(
+        from var(--edge),
+        #ff248a,
+        #fdfbff 16%,
+        #ff62aa 34%,
+        #3f3945 58%,
+        #ff62aa 76%,
+        #ff248a
+      )
+      border-box;
+  box-shadow: 0 30px 80px rgb(0 0 0 / 34%);
+}
+
+.tryon-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tryon-photo--after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--reveal)) 0 0);
+}
+
+/* линия раздела и хват: чисто декор, тянут за сам range поверх фото */
+.tryon-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--reveal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    rgb(255 36 138 / 0%),
+    rgb(255 36 138 / 85%) 12%,
+    rgb(255 36 138 / 85%) 88%,
+    rgb(255 36 138 / 0%)
+  );
+  translate: -1px 0;
+  pointer-events: none;
+}
+
+.tryon-grip {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: linear-gradient(140deg, var(--accent-bright), var(--accent));
+  box-shadow:
+    0 0 0 5px rgb(255 255 255 / 88%),
+    0 14px 30px rgb(120 5 60 / 34%);
+  color: #fff;
+}
+
+.tryon-grip svg {
+  display: block;
+  width: 30px;
+  height: auto;
+}
+
+/* прозрачный ползунок на всю витрину: тянуть можно в любой точке фото */
+.tryon-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: ew-resize;
+}
+
+.tryon-range::-webkit-slider-thumb {
+  width: 54px;
+  height: 54px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+}
+
+.tryon-range::-moz-range-thumb {
+  width: 54px;
+  height: 54px;
+  border: 0;
+  background: transparent;
+}
+
+.tryon-range:focus-visible {
+  outline: 3px solid var(--accent-bright);
+  outline-offset: 4px;
+}
+
+.tryon-mark {
+  position: absolute;
+  top: 18px;
+  padding: 7px 15px 8px;
+  border-radius: 999px;
+  background: rgb(16 10 17 / 72%);
+  color: #fff9fc;
+  font-family: "Onest", sans-serif;
+  font-size: 13px;
+  font-weight: 520;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: opacity 260ms ease;
+  pointer-events: none;
+}
+
+/* слева проявляется "после", поэтому метки стоят на своих половинах */
+.tryon-mark--before {
+  right: 18px;
+}
+
+.tryon-stage.is-full .tryon-mark--before,
+.tryon-stage.is-empty .tryon-mark--after {
+  opacity: 0;
+}
+
+.tryon-mark--after {
+  left: 18px;
+  background: linear-gradient(120deg, var(--accent), var(--accent-bright));
+}
+
+.tryon-side {
+  display: grid;
+  gap: clamp(18px, 1.8vw, 26px);
+  justify-items: start;
+}
+
+/* в этой секции заголовок живет в колонке, а не на всю ширину */
+.tryon-head h2 {
+  font-size: clamp(42px, 5.4vw, 92px);
+}
+
+.tryon-lead {
+  max-width: 26ch;
+}
+
+.tryon-lead {
+  color: rgb(248 243 248 / 72%);
+  font-family: "Onest", sans-serif;
+  font-size: clamp(18px, 1.5vw, 24px);
+  font-weight: 440;
+  line-height: 1.4;
+}
+
+.tryon-drag-hint {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  color: var(--accent-bright);
+  font-family: "Onest", sans-serif;
+  font-size: 14px;
+  font-weight: 520;
+  letter-spacing: 0.02em;
+  transition: opacity 320ms ease;
+}
+
+.tryon-shell.is-dragged .tryon-drag-hint {
+  opacity: 0;
+}
+
+.tryon-done {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+  margin-top: 8px;
+}
+
+.tryon-done[hidden] {
+  display: none;
+}
+
+.tryon-done p {
+  max-width: 30ch;
+  color: #fff9fc;
+  font-family: "Onest", sans-serif;
+  font-size: clamp(17px, 1.3vw, 20px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+}
+
+@media (max-width: 900px) {
+  .tryon-body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "head"
+      "stage"
+      "side";
+  }
+
+  .tryon-head {
+    text-align: center;
+  }
+
+  .tryon-picker,
+  .tryon-side {
+    justify-content: center;
+    justify-items: center;
+    max-width: none;
+    text-align: center;
+  }
+
+  .tryon-done {
+    justify-items: center;
+  }
+}
+
+/* три пилюли должны лечь в одну строку даже на 360px */
+@media (max-width: 460px) {
+  .tryon-picker {
+    gap: 7px;
+  }
+
+  .tryon-tab {
+    padding: 10px 17px 11px;
+    font-size: 14px;
+  }
+
+  .tryon-grip {
+    width: 46px;
+    height: 46px;
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tryon-frame {
+    animation: edge-spin 10s linear infinite;
+  }
+
+  /* качаем хват, пока его не тронули: иначе не читается как перетаскиваемый */
+  .tryon-shell:not(.is-dragged) .tryon-grip {
+    animation: tryon-nudge 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes tryon-nudge {
+  0%,
+  60%,
+  100% {
+    translate: 0 0;
+  }
+
+  30% {
+    translate: 9px 0;
   }
 }

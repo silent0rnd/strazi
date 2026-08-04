@@ -15,6 +15,7 @@ const mimeTypes = {
   ".mp4": "video/mp4",
   ".png": "image/png",
   ".ttf": "font/ttf",
+  ".webp": "image/webp",
 };
 
 createServer(async (request, response) => {

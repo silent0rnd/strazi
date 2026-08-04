@@ -359,32 +359,103 @@ const lightbox = document.getElementById("lightbox");
 if (workGallery && lightbox) {
   const lightboxImg = lightbox.querySelector("img");
 
-  workGallery.querySelectorAll("img").forEach((img) => {
-    img.tabIndex = 0;
-    img.setAttribute("role", "button");
+  workGallery.querySelectorAll(".work-shot").forEach((shot) => {
+    shot.tabIndex = 0;
+    shot.setAttribute("role", "button");
   });
 
-  const openLightbox = (img) => {
+  // лента продублирована для бесшовного цикла — листаем только оригиналы
+  const shots = [...workGallery.querySelectorAll(".work-shot:not([aria-hidden]) img")];
+  let current = 0;
+
+  const show = (index) => {
+    current = (index + shots.length) % shots.length;
+    const img = shots[current];
     lightboxImg.src = img.currentSrc || img.src;
     lightboxImg.alt = img.alt || "Пример работы";
+  };
+
+  // у img глобально pointer-events: none, поэтому цель клика — сама карточка
+  const openLightbox = (shot) => {
+    const img = shot.querySelector("img");
+    if (!img) return;
+    const index = shots.findIndex((item) => item.src === img.src);
+    show(index < 0 ? 0 : index);
     lightbox.showModal();
   };
 
   workGallery.addEventListener("click", (event) => {
-    const img = event.target.closest("img");
-    if (img) openLightbox(img);
+    const shot = event.target.closest(".work-shot");
+    if (shot) openLightbox(shot);
   });
 
   workGallery.addEventListener("keydown", (event) => {
     if (event.key !== "Enter" && event.key !== " ") return;
-    const img = event.target.closest("img");
-    if (!img) return;
+    const shot = event.target.closest(".work-shot");
+    if (!shot) return;
     event.preventDefault();
-    openLightbox(img);
+    openLightbox(shot);
   });
 
-  // всё, кроме самой картинки — это фон и крестик
-  lightbox.addEventListener("click", (event) => {
-    if (event.target !== lightboxImg) lightbox.close();
+  lightbox.querySelector(".lightbox-nav--prev").addEventListener("click", () => show(current - 1));
+  lightbox.querySelector(".lightbox-nav--next").addEventListener("click", () => show(current + 1));
+
+  lightbox.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowLeft") show(current - 1);
+    if (event.key === "ArrowRight") show(current + 1);
   });
+
+  lightbox.querySelector(".lightbox-close").addEventListener("click", () => lightbox.close());
+
+  // сам dialog как цель клика = попали в фон мимо картинки и кнопок
+  lightbox.addEventListener("click", (event) => {
+    if (event.target === lightbox) lightbox.close();
+  });
+}
+
+// примерочная: ползунок "до/после". range лежит прозрачным слоем на всю
+// витрину, поэтому тянуть можно в любой точке фотографии
+const tryonShell = document.querySelector(".tryon-shell");
+
+if (tryonShell) {
+  const stage = tryonShell.querySelector("[data-tryon-stage]");
+  const range = tryonShell.querySelector("[data-tryon-range]");
+  const before = tryonShell.querySelector("[data-tryon-before]");
+  const after = tryonShell.querySelector("[data-tryon-after]");
+  const done = tryonShell.querySelector("[data-tryon-done]");
+  const tabs = Array.from(tryonShell.querySelectorAll("[data-tryon-item]"));
+  const labels = { shoe: "Туфля", mug: "Кружка", shirt: "Футболка" };
+
+  const draw = () => {
+    const value = Number(range.value);
+    stage.style.setProperty("--reveal", `${value}%`);
+    // метка без своей половины кадра только мешает
+    stage.classList.toggle("is-full", value > 88);
+    stage.classList.toggle("is-empty", value < 12);
+    // CTA отдаем тому, кто довел показ до конца, а не просто дернул ползунок
+    if (done) done.hidden = value < 92;
+  };
+
+  range.addEventListener("input", () => {
+    tryonShell.classList.add("is-dragged");
+    draw();
+  });
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      const key = tab.dataset.tryonItem;
+      before.src = `assets/tryon/${key}-before.webp`;
+      before.alt = `${labels[key]} до инкрустации`;
+      after.src = `assets/tryon/${key}-after.webp`;
+      after.alt = `${labels[key]}, инкрустированная кристаллами`;
+
+      tabs.forEach((item) => {
+        const isActive = item === tab;
+        item.classList.toggle("is-active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
+      });
+    });
+  });
+
+  draw();
 }
