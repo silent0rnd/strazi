@@ -1049,7 +1049,9 @@ p {
 }
 
 .audience-card--pink {
-  background: linear-gradient(135deg, var(--action), var(--action-strong));
+  /* светлый конец градиента был #ff248a: текст 15px давал на нём 3.25:1.
+     стопы опущены до #d4106d и #a80d56 — 4.71:1 и 7.35:1 */
+  background: linear-gradient(135deg, #a80d56, var(--action));
   color: #fff8fc;
 }
 
@@ -3423,14 +3425,17 @@ img {
   border: 1px solid rgb(255 255 255 / 48%);
   background: var(--accent);
   box-shadow: 0 14px 34px rgb(83 1 41 / 38%);
-  color: #fff;
+  /* на мобиле стрелка садится до 21px и выходит из "крупного текста":
+     белая давала 3.58:1 при пороге 4.5, тёмная краска по акценту — 5.3:1 */
+  color: var(--accent-ink);
 }
 
 .carousel-arrow:hover,
 .carousel-arrow:focus-visible {
   border-color: #fff;
   background: #fff;
-  color: var(--accent);
+  /* --accent на белом даёт 3.58:1, --action — 5.18:1 */
+  color: var(--action);
 }
 
 .carousel-arrow--prev {
@@ -5208,7 +5213,9 @@ html {
   border-color: transparent;
   background: linear-gradient(120deg, var(--accent), var(--accent-bright));
   box-shadow: 0 12px 30px rgb(255 36 138 / 26%);
-  color: #fff;
+  /* белый на розовом давал 2.77:1 при пороге 4.5 для 15px;
+     тёмная краска по акценту — 5.3:1 и 6.8:1 на концах градиента */
+  color: var(--accent-ink);
 }
 
 .tryon-body {
@@ -5386,6 +5393,8 @@ html {
 .tryon-mark--after {
   left: 18px;
   background: linear-gradient(120deg, var(--accent), var(--accent-bright));
+  /* тот же случай, что и активная вкладка: было 2.67:1 на 13px */
+  color: var(--accent-ink);
 }
 
 .tryon-side {
