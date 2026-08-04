@@ -4473,19 +4473,20 @@ img {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* разные скорости и фазы, чтобы кольца не пульсировали в такт */
+  /* разные скорости и фазы, чтобы кольца не пульсировали в такт.
+     полсекунды на оборот читались как три спиннера загрузки на блоке доверия */
   .trust-item::before {
-    animation: ring-spin 0.52s linear infinite;
+    animation: ring-spin 5.2s linear infinite;
   }
 
   .trust-item:nth-child(2)::before {
-    animation-duration: 0.62s;
-    animation-delay: -0.18s;
+    animation-duration: 6.2s;
+    animation-delay: -1.8s;
   }
 
   .trust-item:nth-child(3)::before {
-    animation-duration: 0.56s;
-    animation-delay: -0.34s;
+    animation-duration: 5.6s;
+    animation-delay: -3.4s;
   }
 }
 
@@ -5589,4 +5590,19 @@ p,
     width: calc(min(88vw, 430px) - 68px);
     justify-content: center;
   }
+}
+
+/* ============ Pass 5: motion ============ */
+
+/* фоновые циклы не крутятся за пределами экрана: их два десятка, и все
+   работали одновременно независимо от того, видит ли их кто-нибудь.
+   !important здесь обязателен: анимации заданы шорткатом animation, который
+   сбрасывает play-state, и селекторами специфичнее этого */
+.is-idle,
+.is-idle::before,
+.is-idle::after,
+.is-idle *,
+.is-idle *::before,
+.is-idle *::after {
+  animation-play-state: paused !important;
 }

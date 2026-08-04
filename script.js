@@ -47,6 +47,19 @@ if (header) {
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const revealItems = document.querySelectorAll(".reveal");
 
+// фоновые циклы держим только в видимых секциях: иначе два десятка бесконечных
+// анимаций крутятся всю сессию и жгут батарею на телефоне
+if (!reducedMotion && "IntersectionObserver" in window) {
+  const idleObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => entry.target.classList.toggle("is-idle", !entry.isIntersecting));
+    },
+    { rootMargin: "10% 0px" }
+  );
+
+  document.querySelectorAll("section").forEach((section) => idleObserver.observe(section));
+}
+
 const countUp = (element) => {
   if (element.dataset.counted) return;
   element.dataset.counted = "1";
@@ -60,7 +73,9 @@ const countUp = (element) => {
   element.style.textAlign = "right";
 
   const step = (now) => {
-    const progress = Math.min((now - started) / 3200, 1);
+    // карусель отзывов листается каждые 7000 мс: счётчик должен успеть добежать
+    // сильно раньше, иначе цифра половину показа противоречит тексту рядом
+    const progress = Math.min((now - started) / 1400, 1);
     const eased = 1 - (1 - progress) ** 3;
     element.textContent = Math.round(target * eased).toLocaleString("ru-RU");
 
@@ -447,6 +462,23 @@ if (tryonShell) {
     tryonShell.classList.add("is-dragged");
     draw();
   });
+
+  // кадры остальных изделий подтягиваем на подходе к экрану: иначе первое
+  // переключение вкладки ждёт загрузку и показывает пустой кадр
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(
+      (entries, observer) => {
+        if (!entries[0].isIntersecting) return;
+        observer.disconnect();
+        Object.keys(labels).forEach((key) => {
+          ["before", "after"].forEach((state) => {
+            new Image().src = `assets/tryon/${key}-${state}.webp`;
+          });
+        });
+      },
+      { rootMargin: "300px" }
+    ).observe(tryonShell);
+  }
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
