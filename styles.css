@@ -610,7 +610,9 @@ p {
 .section {
   width: min(100%, calc(var(--max-width) + (var(--page-pad) * 2)));
   margin: 0 auto;
-  padding: clamp(92px, 11vw, 176px) var(--page-pad);
+  /* 11vw сверху и снизу давали 22vw между контентом соседних секций —
+     на 1440x900 это 317px, треть экрана пустоты на каждом стыке */
+  padding: clamp(76px, 8.5vw, 140px) var(--page-pad);
 }
 
 .section-heading {
@@ -960,7 +962,8 @@ p {
 }
 
 .audience-intro h2 {
-  max-width: 13ch;
+  /* 13ch не давали фразе лечь в две строки: "вы" оставалось третьей */
+  max-width: 16ch;
 }
 
 .audience-grid {
@@ -996,12 +999,14 @@ p {
   grid-column: 6 / 13;
 }
 
+/* третий ряд держит ту же пару 7/5, что и первые два: при 8/4 последняя
+   карточка выходила уже всех остальных, хотя помечена как --wide */
 .audience-card:nth-child(5) {
-  grid-column: 1 / 9;
+  grid-column: 1 / 8;
 }
 
 .audience-card:nth-child(6) {
-  grid-column: 9 / 13;
+  grid-column: 8 / 13;
 }
 
 .audience-card h3 {
@@ -3305,9 +3310,14 @@ img {
   color: #f8f3f8;
 }
 
-.results-grid--uniform .result-card:nth-child(4),
+/* пять карточек в шести колонках: последняя пара держит ту же ширину,
+   что и первый ряд, и стоит по центру — иначе карточки разъезжаются 423 / 644 */
+.results-grid--uniform .result-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
 .results-grid--uniform .result-card:nth-child(5) {
-  grid-column: span 3;
+  grid-column: span 2;
 }
 
 .results-grid--uniform .result-card::before {
@@ -3502,7 +3512,8 @@ img {
   grid-template-columns: minmax(0, 1fr) minmax(320px, 0.72fr);
   align-items: center;
   gap: clamp(40px, 7vw, 110px);
-  margin: clamp(86px, 10vw, 150px) auto;
+  /* тот же шаг, что и вертикальный ритм секций */
+  margin: clamp(76px, 8.5vw, 140px) auto;
   padding: clamp(48px, 6vw, 90px);
   overflow: visible;
   border: 1px solid rgb(255 255 255 / 13%);
