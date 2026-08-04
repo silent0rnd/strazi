@@ -26,6 +26,13 @@ if (menuToggle && nav) {
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closeMenu();
   });
+
+  // панель занимает не всю ширину: тап по оставшейся полосе должен закрывать меню
+  document.addEventListener("pointerdown", (event) => {
+    if (!nav.classList.contains("is-open")) return;
+    if (nav.contains(event.target) || menuToggle.contains(event.target)) return;
+    closeMenu();
+  });
 }
 
 if (header) {

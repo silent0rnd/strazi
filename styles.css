@@ -4392,9 +4392,12 @@ img {
   }
 }
 
+/* отдельным свойством scale, а не через transform: на мобиле фото центрируется
+   через transform: translateX(50%), и анимация transform стирала этот сдвиг —
+   кадр уезжал на полширины за левый край экрана */
 @keyframes hero-push {
   to {
-    transform: scale(1.06);
+    scale: 1.06;
   }
 }
 
@@ -5532,4 +5535,58 @@ p,
 .trust-item strong,
 .author-role {
   text-wrap: pretty;
+}
+
+/* ============ Pass 4: мобильная версия ============ */
+
+@media (max-width: 900px) {
+  /* точки были 26x26 при пороге 44. Пять зон по 44 плюс две стрелки по 56
+     не помещаются в 318px карточки, поэтому точки уходят строкой под неё */
+  .carousel-shell--reviews {
+    padding-bottom: 58px;
+  }
+
+  .reviews .carousel-arrow {
+    bottom: 72px;
+  }
+
+  .carousel-dots {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    justify-content: center;
+    gap: 0;
+  }
+
+  .carousel-dot {
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 1020px) {
+  /* ссылки подвала были высотой 21px */
+  .site-footer a,
+  .site-author a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .footer-legal,
+  .footer-contacts,
+  .footer-docs {
+    gap: 0;
+  }
+
+  /* целевое действие доступно и из открытого меню */
+  .menu-open .header-cta {
+    position: fixed;
+    right: 34px;
+    bottom: 40px;
+    z-index: 40;
+    display: inline-flex;
+    width: calc(min(88vw, 430px) - 68px);
+    justify-content: center;
+  }
 }
