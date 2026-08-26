@@ -5659,6 +5659,25 @@ p,
   cursor: zoom-in;
 }
 
+/* ============ Pass 8: плавность скролла ============ */
+
+/* Эти анимации меняют не transform/opacity, а входные данные градиента:
+   --edge и --ring-a у conic-gradient, background-position у блика. Такое
+   нельзя отдать видеокарте — браузер перерисовывает элемент каждый кадр
+   на главном потоке и отнимает время у самого скролла. Замер при CPU 6x:
+   53 fps и 54 просроченных кадра против 60 fps и 0 с этой паузой.
+   Гасим их только на время движения: стоящую страницу они не тормозят. */
+.is-scrolling .results-grid--uniform .result-card,
+.is-scrolling .tryon-frame,
+.is-scrolling .trust-item::before,
+.is-scrolling .hero h1 span,
+.is-scrolling .author-stats strong,
+.is-scrolling .button--primary,
+.is-scrolling .final-copy .button.button--primary,
+.is-scrolling .button--nav {
+  animation-play-state: paused !important;
+}
+
 /* ============ Pass 7: типографика подписей ============ */
 
 /* мелкие подписи-ярлыки: узкий гротеск заголовков вместо нейтрального Onest,

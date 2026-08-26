@@ -60,6 +60,26 @@ if (!reducedMotion && "IntersectionObserver" in window) {
   document.querySelectorAll("section").forEach((section) => idleObserver.observe(section));
 }
 
+// класс держим только пока страница едет: правило .is-scrolling в styles.css
+// снимает с главного потока анимации, которые перерисовывают элемент каждый кадр
+if (!reducedMotion) {
+  let scrollEnd = 0;
+
+  addEventListener(
+    "scroll",
+    () => {
+      document.documentElement.classList.add("is-scrolling");
+      clearTimeout(scrollEnd);
+      // 160 мс: инерция колеса и тачпада успевает затихнуть, но пауза
+      // не остается заметной после остановки
+      scrollEnd = setTimeout(() => {
+        document.documentElement.classList.remove("is-scrolling");
+      }, 160);
+    },
+    { passive: true }
+  );
+}
+
 const countUp = (element) => {
   if (element.dataset.counted) return;
   element.dataset.counted = "1";
