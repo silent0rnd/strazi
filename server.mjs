@@ -2,6 +2,7 @@ import { createServer } from "node:http";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { extname, resolve, sep } from "node:path";
+import { createGzip } from "node:zlib";
 
 const host = "127.0.0.1";
 const port = Number(process.env.PORT || 4174);
@@ -81,15 +82,20 @@ createServer(async (request, response) => {
       return;
     }
 
+    const compressible = contentType.startsWith("text/") || contentType.startsWith("image/svg");
+    const gzip = compressible && /\bgzip\b/.test(request.headers["accept-encoding"] || "");
+
     response.writeHead(200, {
       "Accept-Ranges": "bytes",
       "Cache-Control": "no-store",
-      "Content-Length": fileStat.size,
       "Content-Type": contentType,
+      ...(gzip ? { "Content-Encoding": "gzip", Vary: "Accept-Encoding" } : { "Content-Length": fileStat.size }),
     });
 
     if (request.method === "HEAD") {
       response.end();
+    } else if (gzip) {
+      createReadStream(filePath).pipe(createGzip()).pipe(response);
     } else {
       createReadStream(filePath).pipe(response);
     }

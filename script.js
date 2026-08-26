@@ -296,12 +296,31 @@ if (finalVideo && videoToggles.length && videoShell) {
     });
   };
 
+  let busyTimeout;
+
+  const setBusy = (on) => {
+    clearTimeout(busyTimeout);
+    videoShell.classList.toggle("is-busy", on);
+    videoToggles.forEach((button) => {
+      button.setAttribute("aria-busy", String(on));
+    });
+    if (!on) return;
+    setVideoButtons("Загружаю…", "Загружаю…");
+    // ponytail: страховка от залипания — при обрыве сети error приходит
+    // не всегда. Нужнее точность — слушать stalled/progress.
+    busyTimeout = setTimeout(() => {
+      setBusy(false);
+      setVideoButtons("Смотреть видео", "Воспроизвести");
+    }, 20000);
+  };
+
   const toggleVideo = async () => {
     if (!finalVideo.paused) {
       finalVideo.pause();
       return;
     }
 
+    setBusy(true);
     finalVideo.controls = true;
     if (finalVideo.readyState === 0) finalVideo.load();
 
@@ -313,6 +332,7 @@ if (finalVideo && videoToggles.length && videoShell) {
       try {
         await finalVideo.play();
       } catch {
+        setBusy(false);
         setVideoButtons("Смотреть видео", "Воспроизвести");
       }
     }
@@ -324,24 +344,35 @@ if (finalVideo && videoToggles.length && videoShell) {
 
   finalVideo.addEventListener("click", toggleVideo);
 
-  finalVideo.addEventListener("play", () => {
+  // playing, а не play: play срабатывает сразу по вызову, ещё до картинки
+  finalVideo.addEventListener("playing", () => {
+    setBusy(false);
     videoShell.classList.add("is-playing");
     setVideoButtons("Пауза", "Пауза", true);
   });
 
+  finalVideo.addEventListener("waiting", () => {
+    setBusy(true);
+  });
+
   finalVideo.addEventListener("pause", () => {
+    setBusy(false);
     videoShell.classList.remove("is-playing");
+    // после ошибки браузер шлёт pause: не затираем надпись «Видео недоступно»
+    if (finalVideo.error) return;
     if (!finalVideo.ended) {
       setVideoButtons("Продолжить видео", "Продолжить");
     }
   });
 
   finalVideo.addEventListener("ended", () => {
+    setBusy(false);
     videoShell.classList.remove("is-playing");
     setVideoButtons("Смотреть снова", "Смотреть снова");
   });
 
   finalVideo.addEventListener("error", () => {
+    setBusy(false);
     videoToggles.forEach((button) => {
       button.disabled = true;
     });
@@ -478,6 +509,14 @@ if (tryonShell) {
   const tabs = Array.from(tryonShell.querySelectorAll("[data-tryon-item]"));
   const labels = { shoe: "Туфля", mug: "Кружка", shirt: "Футболка" };
 
+  // те же три ширины, что размечены в index.html у стартовой пары кадров
+  const setTryonSrc = (img, key, state) => {
+    const base = `assets/tryon/${key}-${state}`;
+    img.sizes = "(max-width: 1020px) 90vw, 44vw";
+    img.srcset = `${base}-480.webp 480w, ${base}-800.webp 800w, ${base}.webp 1000w`;
+    img.src = `${base}.webp`;
+  };
+
   const draw = () => {
     const value = Number(range.value);
     stage.style.setProperty("--reveal", `${value}%`);
@@ -503,7 +542,7 @@ if (tryonShell) {
         observer.disconnect();
         Object.keys(labels).forEach((key) => {
           ["before", "after"].forEach((state) => {
-            new Image().src = `assets/tryon/${key}-${state}.webp`;
+            setTryonSrc(new Image(), key, state);
           });
         });
       },
@@ -514,9 +553,9 @@ if (tryonShell) {
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       const key = tab.dataset.tryonItem;
-      before.src = `assets/tryon/${key}-before.webp`;
+      setTryonSrc(before, key, "before");
       before.alt = `${labels[key]} до инкрустации`;
-      after.src = `assets/tryon/${key}-after.webp`;
+      setTryonSrc(after, key, "after");
       after.alt = `${labels[key]}, инкрустированная кристаллами`;
 
       tabs.forEach((item) => {

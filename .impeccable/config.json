@@ -1,0 +1,29 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "roboto condensed",
+        "createdAt": "2026-08-26T18:27:56.048Z",
+        "reason": "Self-hosted condensed grotesque in assets/fonts; user confirmed intentional"
+      },
+      {
+        "rule": "gradient-text",
+        "value": "*",
+        "files": [
+          "styles.css"
+        ],
+        "createdAt": "2026-08-26T18:28:00.587Z",
+        "reason": "Hero h1 accent gradient is the deliberate focal point; user confirmed intentional"
+      },
+      {
+        "rule": "overused-font",
+        "value": "roboto",
+        "createdAt": "2026-08-26T18:28:13.605Z",
+        "reason": "Detector truncates the family name; the real face is self-hosted Roboto Condensed, user confirmed"
+      }
+    ]
+  }
+}

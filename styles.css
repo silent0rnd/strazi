@@ -622,7 +622,8 @@ p {
 
 .section h2,
 .final-cta h2 {
-  font-size: clamp(48px, 7vw, 112px);
+  /* одна шкала с .hero h1 (5vw/94px): h2 всегда мельче h1 */
+  font-size: clamp(44px, 4.2vw, 78px);
   line-height: 0.9;
   text-wrap: balance;
 }
@@ -1012,7 +1013,7 @@ p {
 .audience-card h3 {
   max-width: 18ch;
   font-family: "Roboto Condensed", "Segoe UI", sans-serif;
-  font-size: clamp(29px, 3.4vw, 53px);
+  font-size: clamp(24px, 1.85vw, 33px);
   font-weight: 900;
   letter-spacing: -0.045em;
   line-height: 0.98;
@@ -1153,7 +1154,7 @@ p {
 .final-copy h2 {
   max-width: 9ch;
   margin-top: 8px;
-  font-size: clamp(50px, 6vw, 94px);
+  font-size: clamp(44px, 4.2vw, 78px);
 }
 
 .final-copy .button {
@@ -1618,7 +1619,6 @@ p {
   .hero-actions .button {
     min-height: 52px;
     padding-inline: 20px;
-    font-size: 12px;
   }
 
   .hero-visual {
@@ -1687,7 +1687,7 @@ p {
 
   .section h2,
   .final-cta h2 {
-    font-size: clamp(44px, 13vw, 66px);
+    font-size: clamp(34px, 10.4vw, 66px);
     line-height: 0.9;
   }
 
@@ -1797,7 +1797,7 @@ p {
   }
 
   .audience-card h3 {
-    font-size: 35px;
+    font-size: clamp(23px, 6vw, 29px);
   }
 
   .audience-card--image {
@@ -1843,7 +1843,6 @@ p {
     min-height: 58px;
     margin-top: 28px;
     padding-inline: 18px;
-    font-size: 12px;
     white-space: normal;
   }
 
@@ -2355,20 +2354,20 @@ body {
   padding: clamp(34px, 5vw, 68px);
   background:
     linear-gradient(0deg, rgb(12 8 14 / 88%), rgb(12 8 14 / 18%)),
-    url("assets/generated/crystal-texture.jpg") center / cover;
+    url("assets/generated/crystal-texture.webp") center / cover;
   color: #f9f4f9;
 }
 
 .review-card--polina .review-outcome {
   background:
     linear-gradient(0deg, rgb(12 8 14 / 90%), rgb(12 8 14 / 22%)),
-    url("assets/generated/campaign-objects.jpg") center / cover;
+    url("assets/generated/campaign-objects.webp") center / cover;
 }
 
 .review-card--mariana .review-outcome {
   background:
     linear-gradient(0deg, rgb(12 8 14 / 90%), rgb(12 8 14 / 16%)),
-    url("assets/generated/campaign-gallery.jpg") center / cover;
+    url("assets/generated/campaign-gallery.webp") center / cover;
 }
 
 .review-outcome strong {
@@ -2769,7 +2768,7 @@ body {
 .hero-photo {
   width: 100%;
   height: 100%;
-  background: url("assets/generated/campaign-hero.jpg") center / cover no-repeat;
+  background: url("assets/generated/campaign-hero.webp") center / cover no-repeat;
   filter: saturate(1.02) contrast(1.02);
 }
 
@@ -3074,7 +3073,7 @@ img {
 
 .site-header,
 .site-header.is-compact {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -3082,11 +3081,23 @@ img {
   padding: 0 var(--page-pad);
   border: 0;
   border-radius: 0;
-  background: transparent !important;
-  box-shadow: none !important;
-  backdrop-filter: none !important;
-  -webkit-backdrop-filter: none !important;
   transform: none;
+}
+
+/* над героем шапка прозрачная, ниже — тёмная полоса: меню белое, светлые секции его съедают */
+.site-header {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.site-header.is-compact {
+  border-bottom: 1px solid rgb(255 255 255 / 10%);
+  background: rgb(14 10 16 / 82%);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 22%);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
 .site-header::before,
@@ -3642,6 +3653,16 @@ img {
     transform: translateX(0);
   }
 
+  /* панель уже экрана: полосу слева затемняем, тап по ней ловит pointerdown в script.js */
+  body.menu-open::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    background: rgb(9 6 11 / 55%);
+    pointer-events: auto; /* глобальный ::before выключает клики, здесь нужны */
+  }
+
   .site-nav a,
   .site-header.is-compact .site-nav a {
     color: #fff8fc;
@@ -3938,6 +3959,44 @@ img {
   transform: translate(-50%, -50%) scale(0.92);
 }
 
+/* состояние «загружаю»: перебивает is-playing, чтобы было видно и при
+   подвисании в середине ролика */
+.final-video.is-busy .video-play-overlay {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+}
+
+.final-video.is-busy .video-play-overlay__icon::before {
+  display: none;
+}
+
+.final-video.is-busy .video-play-overlay__icon::after {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(255 255 255 / 32%);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: video-spin 700ms linear infinite;
+  content: "";
+}
+
+@keyframes video-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes video-fade {
+  to {
+    opacity: 0.35;
+  }
+}
+
+.button--video[aria-busy="true"] {
+  cursor: progress;
+}
+
 .final-video video {
   position: relative;
   z-index: 0;
@@ -4047,6 +4106,10 @@ img {
 
   .marquee-shell {
     overflow-x: auto;
+  }
+
+  .final-video.is-busy .video-play-overlay__icon::after {
+    animation: video-fade 1.2s ease-in-out infinite alternate;
   }
 }
 
@@ -4436,17 +4499,6 @@ img {
   .final-copy {
     min-width: 0;
   }
-
-  .final-copy h2 {
-    font-size: clamp(34px, 10.4vw, 54px);
-  }
-}
-
-@media (max-width: 760px) {
-  /* та же история: "БЕСПЛАТНОМ" вылезало за пределы блока */
-  .audience-intro h2 {
-    font-size: clamp(34px, 10.4vw, 54px);
-  }
 }
 
 /* ============ Блок доверия: медальоны вместо плиток ============ */
@@ -4825,11 +4877,11 @@ body::before {
     opacity 320ms ease,
     width 260ms var(--ease),
     height 260ms var(--ease);
-  will-change: transform;
 }
 
 .cursor-spark.is-active {
   opacity: 0.9;
+  will-change: transform;
 }
 
 /* курсор растет рядом с кликабельным */
@@ -5399,10 +5451,6 @@ html {
 }
 
 /* в этой секции заголовок живет в колонке, а не на всю ширину */
-.tryon-head h2 {
-  font-size: clamp(42px, 5.4vw, 92px);
-}
-
 .tryon-lead {
   max-width: 26ch;
 }
@@ -5609,4 +5657,28 @@ p,
 /* плитки ленты открывают лайтбокс — курсор должен об этом говорить */
 .marquee-shell .work-shot {
   cursor: zoom-in;
+}
+
+/* ============ Pass 7: типографика подписей ============ */
+
+/* мелкие подписи-ярлыки: узкий гротеск заголовков вместо нейтрального Onest,
+   иначе жирный Onest на 15px читается как системный Segoe UI */
+/* .review-copy p span из Pass 4 специфичнее — поднимаем вес селектора */
+.author-stats span,
+.review-copy .review-earned span,
+.review-copy .review-outcome span {
+  font-family: "Roboto Condensed", "Segoe UI", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.author-role {
+  max-width: 30ch;
+  font-family: "Roboto Condensed", "Segoe UI", sans-serif;
+  font-size: clamp(16px, 1.5vw, 21px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
